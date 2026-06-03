@@ -591,10 +591,11 @@
       playStartSound();             // 发车声
     }, totalDelay);
 
-    // 再 1200ms 后关闭弹窗
+    // 再 1200ms 后跳转训练页
     setTimeout(() => {
       overlay.classList.remove('show');
       goText.classList.remove('show');
+      location.href = 'daily.html';
     }, totalDelay + 1400);
   }
 

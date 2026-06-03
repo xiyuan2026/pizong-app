@@ -1,0 +1,1073 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+  <title>每日圈速训练 · 语文赛车手</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    :root {
+      --red: #E8002D;
+      --yellow: #F5A623;
+      --green: #00D4AA;
+      --bg: #0F0F1A;
+      --card: #1A1A2E;
+      --card2: #20203A;
+      --border: rgba(255,255,255,0.08);
+      --text: #FFFFFF;
+      --muted: #8888AA;
+    }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: -apple-system, 'PingFang SC', 'Helvetica Neue', sans-serif;
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+    }
+
+    .phone {
+      width: 100%;
+      max-width: 480px;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      position: relative;
+      overflow-x: hidden;
+    }
+
+    /* ── 顶栏 ── */
+    .header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 52px 20px 12px;
+    }
+    .back-btn {
+      width: 36px; height: 36px;
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 18px;
+      cursor: pointer;
+      text-decoration: none;
+      color: var(--text);
+    }
+    .header-title {
+      text-align: center;
+    }
+    .header-title .label {
+      font-size: 11px;
+      color: var(--muted);
+      letter-spacing: 1px;
+      text-transform: uppercase;
+    }
+    .header-title .name {
+      font-size: 15px;
+      font-weight: 700;
+      margin-top: 2px;
+    }
+    .header-icon {
+      width: 36px; height: 36px;
+      background: rgba(232,0,45,0.15);
+      border: 1px solid rgba(232,0,45,0.3);
+      border-radius: 10px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 18px;
+    }
+
+    /* ── 进度条 ── */
+    .progress-bar-wrap {
+      padding: 0 20px 20px;
+    }
+    .progress-meta {
+      display: flex;
+      justify-content: space-between;
+      font-size: 12px;
+      color: var(--muted);
+      margin-bottom: 8px;
+    }
+    .progress-track {
+      height: 4px;
+      background: var(--card2);
+      border-radius: 2px;
+      overflow: hidden;
+    }
+    .progress-fill {
+      height: 100%;
+      background: var(--red);
+      border-radius: 2px;
+      transition: width 0.4s ease;
+    }
+
+    /* ── 题型标签 ── */
+    .type-tabs {
+      display: flex;
+      gap: 8px;
+      padding: 0 20px 16px;
+      overflow-x: auto;
+      scrollbar-width: none;
+    }
+    .type-tabs::-webkit-scrollbar { display: none; }
+    .tab {
+      flex-shrink: 0;
+      padding: 6px 14px;
+      border-radius: 20px;
+      font-size: 12px;
+      font-weight: 600;
+      cursor: pointer;
+      border: 1px solid var(--border);
+      background: var(--card);
+      color: var(--muted);
+      transition: all 0.2s;
+    }
+    .tab.active {
+      background: var(--red);
+      border-color: var(--red);
+      color: #fff;
+    }
+
+    /* ── 题目卡片 ── */
+    .question-area {
+      padding: 0 20px;
+      flex: 1;
+    }
+
+    .q-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 20px;
+      margin-bottom: 16px;
+    }
+
+    .q-header {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 16px;
+    }
+    .q-num {
+      font-size: 11px;
+      color: var(--muted);
+      letter-spacing: 1px;
+    }
+    .q-tag {
+      padding: 3px 8px;
+      border-radius: 6px;
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.5px;
+    }
+    .q-tag.dongcheng {
+      background: rgba(0, 212, 170, 0.15);
+      color: var(--green);
+      border: 1px solid rgba(0, 212, 170, 0.3);
+    }
+    .q-tag.xicheng {
+      background: rgba(245, 166, 35, 0.15);
+      color: var(--yellow);
+      border: 1px solid rgba(245, 166, 35, 0.3);
+    }
+    .q-tag.xicheng::before {
+      content: "⚡ ";
+    }
+    .q-source {
+      font-size: 10px;
+      color: var(--muted);
+      margin-left: auto;
+    }
+
+    .q-stem {
+      font-size: 15px;
+      line-height: 1.7;
+      color: #DDD;
+      margin-bottom: 16px;
+    }
+    .q-stem .blank {
+      display: inline-block;
+      min-width: 80px;
+      border-bottom: 2px solid var(--yellow);
+      color: var(--yellow);
+      font-weight: 700;
+      text-align: center;
+      margin: 0 4px;
+      vertical-align: bottom;
+    }
+    .q-stem .poem-line {
+      display: block;
+      text-align: center;
+      font-size: 16px;
+      padding: 4px 0;
+      color: #EEE;
+    }
+    .q-stem .poem-author {
+      display: block;
+      text-align: right;
+      font-size: 12px;
+      color: var(--muted);
+      margin-top: 4px;
+    }
+
+    /* 填空输入 */
+    .fill-input {
+      width: 100%;
+      background: var(--card2);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 12px 14px;
+      color: var(--text);
+      font-size: 15px;
+      outline: none;
+      transition: border-color 0.2s;
+      font-family: inherit;
+    }
+    .fill-input:focus {
+      border-color: var(--yellow);
+    }
+    .fill-input.correct {
+      border-color: var(--green);
+      background: rgba(0, 212, 170, 0.08);
+    }
+    .fill-input.wrong {
+      border-color: var(--red);
+      background: rgba(232, 0, 45, 0.08);
+    }
+
+    /* 选择题选项 */
+    .options {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+    .option {
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+      padding: 12px 14px;
+      background: var(--card2);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      cursor: pointer;
+      transition: all 0.2s;
+      font-size: 14px;
+      line-height: 1.5;
+    }
+    .option:active { opacity: 0.7; }
+    .option.selected {
+      border-color: var(--yellow);
+      background: rgba(245, 166, 35, 0.1);
+    }
+    .option.correct {
+      border-color: var(--green);
+      background: rgba(0, 212, 170, 0.12);
+    }
+    .option.wrong {
+      border-color: var(--red);
+      background: rgba(232, 0, 45, 0.1);
+    }
+    .opt-label {
+      flex-shrink: 0;
+      width: 22px; height: 22px;
+      border-radius: 6px;
+      background: rgba(255,255,255,0.08);
+      border: 1px solid var(--border);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--muted);
+      transition: all 0.2s;
+    }
+    .option.selected .opt-label { background: var(--yellow); border-color: var(--yellow); color: #000; }
+    .option.correct .opt-label { background: var(--green); border-color: var(--green); color: #000; }
+    .option.wrong .opt-label { background: var(--red); border-color: var(--red); color: #fff; }
+
+    /* ── 反馈区 ── */
+    .feedback {
+      margin-top: 14px;
+      padding: 12px 14px;
+      border-radius: 10px;
+      font-size: 13px;
+      line-height: 1.6;
+      display: none;
+    }
+    .feedback.show { display: block; }
+    .feedback.correct-fb {
+      background: rgba(0, 212, 170, 0.12);
+      border: 1px solid rgba(0, 212, 170, 0.3);
+      color: #88EED4;
+    }
+    .feedback.wrong-fb {
+      background: rgba(232, 0, 45, 0.1);
+      border: 1px solid rgba(232, 0, 45, 0.25);
+      color: #FF8888;
+    }
+    .feedback .fb-icon { font-size: 16px; margin-right: 6px; }
+    .feedback .answer-reveal {
+      margin-top: 8px;
+      padding: 8px 10px;
+      background: rgba(255,255,255,0.06);
+      border-radius: 6px;
+      color: var(--text);
+      font-size: 13px;
+    }
+
+    /* ── 提交按钮 ── */
+    .submit-btn {
+      width: 100%;
+      padding: 14px;
+      background: var(--red);
+      border: none;
+      border-radius: 12px;
+      color: #fff;
+      font-size: 15px;
+      font-weight: 700;
+      letter-spacing: 1px;
+      cursor: pointer;
+      margin-top: 8px;
+      transition: opacity 0.2s;
+    }
+    .submit-btn:active { opacity: 0.8; }
+    .submit-btn:disabled {
+      background: var(--card2);
+      color: var(--muted);
+      cursor: not-allowed;
+    }
+
+    /* ── 下一题 ── */
+    .next-btn {
+      width: 100%;
+      padding: 14px;
+      background: var(--card2);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      color: var(--text);
+      font-size: 15px;
+      font-weight: 700;
+      cursor: pointer;
+      margin-top: 10px;
+      transition: all 0.2s;
+      display: none;
+    }
+    .next-btn.show { display: block; }
+    .next-btn:active { background: var(--card); }
+
+    /* ── 完成屏幕 ── */
+    .finish-screen {
+      display: none;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 40px 20px;
+      text-align: center;
+      flex: 1;
+    }
+    .finish-screen.show { display: flex; }
+    .finish-trophy {
+      font-size: 64px;
+      margin-bottom: 20px;
+    }
+    .finish-title {
+      font-size: 24px;
+      font-weight: 900;
+      margin-bottom: 8px;
+    }
+    .finish-sub {
+      font-size: 14px;
+      color: var(--muted);
+      margin-bottom: 30px;
+    }
+    .score-ring {
+      width: 120px; height: 120px;
+      margin: 0 auto 30px;
+      position: relative;
+    }
+    .score-ring svg { transform: rotate(-90deg); }
+    .score-ring .score-text {
+      position: absolute;
+      top: 50%; left: 50%;
+      transform: translate(-50%, -50%);
+      text-align: center;
+    }
+    .score-ring .score-num {
+      font-size: 32px;
+      font-weight: 900;
+      display: block;
+    }
+    .score-ring .score-label {
+      font-size: 11px;
+      color: var(--muted);
+    }
+    .stat-row {
+      display: flex;
+      gap: 16px;
+      margin-bottom: 30px;
+    }
+    .stat-box {
+      flex: 1;
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 14px;
+      text-align: center;
+    }
+    .stat-box .val {
+      font-size: 22px;
+      font-weight: 900;
+      display: block;
+    }
+    .stat-box .lbl {
+      font-size: 11px;
+      color: var(--muted);
+      margin-top: 4px;
+    }
+    .retry-btn {
+      width: 100%;
+      padding: 14px;
+      background: var(--red);
+      border: none;
+      border-radius: 12px;
+      color: #fff;
+      font-size: 15px;
+      font-weight: 700;
+      cursor: pointer;
+      margin-bottom: 12px;
+    }
+    .home-btn {
+      width: 100%;
+      padding: 14px;
+      background: var(--card2);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      color: var(--text);
+      font-size: 15px;
+      font-weight: 700;
+      cursor: pointer;
+      text-decoration: none;
+      display: block;
+      text-align: center;
+    }
+
+    /* ── 今日积分提示 ── */
+    .xp-toast {
+      position: fixed;
+      top: 60px;
+      left: 50%;
+      transform: translateX(-50%) translateY(-20px);
+      background: var(--yellow);
+      color: #000;
+      font-size: 13px;
+      font-weight: 700;
+      padding: 8px 18px;
+      border-radius: 20px;
+      opacity: 0;
+      transition: all 0.3s;
+      pointer-events: none;
+      z-index: 999;
+    }
+    .xp-toast.show {
+      opacity: 1;
+      transform: translateX(-50%) translateY(0);
+    }
+  </style>
+</head>
+<body>
+<div class="phone">
+
+  <!-- 顶栏 -->
+  <div class="header">
+    <a href="index.html" class="back-btn">←</a>
+    <div class="header-title">
+      <div class="label">DAILY LAP TRAINING</div>
+      <div class="name">每日圈速训练</div>
+    </div>
+    <div class="header-icon">🏎</div>
+  </div>
+
+  <!-- 进度条 -->
+  <div class="progress-bar-wrap">
+    <div class="progress-meta">
+      <span id="progressLabel">第 1 题 / 共 10 题</span>
+      <span id="progressScore">0 分</span>
+    </div>
+    <div class="progress-track">
+      <div class="progress-fill" id="progressFill" style="width:0%"></div>
+    </div>
+  </div>
+
+  <!-- 题型筛选 -->
+  <div class="type-tabs">
+    <div class="tab active" onclick="filterType('all')">全部训练</div>
+    <div class="tab" onclick="filterType('dictation')">📝 默写</div>
+    <div class="tab" onclick="filterType('wenyan')">📜 古文</div>
+    <div class="tab" onclick="filterType('reading')">🔍 阅读</div>
+    <div class="tab" onclick="filterType('xicheng')">⚡ 西城挑战</div>
+  </div>
+
+  <!-- 题目区域 -->
+  <div class="question-area" id="questionArea">
+    <!-- 动态渲染 -->
+  </div>
+
+  <!-- 完成屏幕 -->
+  <div class="finish-screen" id="finishScreen">
+    <div class="finish-trophy" id="finishTrophy">🏆</div>
+    <div class="finish-title" id="finishTitle">训练完成！</div>
+    <div class="finish-sub" id="finishSub">今日圈速训练结束</div>
+    <div class="score-ring">
+      <svg width="120" height="120" viewBox="0 0 120 120">
+        <circle cx="60" cy="60" r="50" fill="none" stroke="#1A1A2E" stroke-width="12"/>
+        <circle id="scoreArc" cx="60" cy="60" r="50" fill="none" stroke="#E8002D"
+          stroke-width="12" stroke-linecap="round"
+          stroke-dasharray="314" stroke-dashoffset="314"/>
+      </svg>
+      <div class="score-text">
+        <span class="score-num" id="scoreNum">0</span>
+        <span class="score-label">正确率</span>
+      </div>
+    </div>
+    <div class="stat-row">
+      <div class="stat-box">
+        <span class="val" id="statCorrect" style="color:var(--green)">0</span>
+        <div class="lbl">答对</div>
+      </div>
+      <div class="stat-box">
+        <span class="val" id="statWrong" style="color:var(--red)">0</span>
+        <div class="lbl">答错</div>
+      </div>
+      <div class="stat-box">
+        <span class="val" id="statXP" style="color:var(--yellow)">0</span>
+        <div class="lbl">积分 XP</div>
+      </div>
+    </div>
+    <button class="retry-btn" onclick="restartSession()">🔄 再来一局</button>
+    <a href="index.html" class="home-btn">← 返回车队控制台</a>
+  </div>
+
+</div>
+
+<!-- XP 提示 toast -->
+<div class="xp-toast" id="xpToast">+10 XP</div>
+
+<script>
+// ══════════════════════════════════════════
+// 题库
+// ══════════════════════════════════════════
+const ALL_QUESTIONS = [
+
+  // ── 默写 · 东城区 ──
+  {
+    id: 'dc_d1',
+    type: 'dictation',
+    district: 'dongcheng',
+    source: '东城 · 默写',
+    poem: '游山西村',
+    author: '陆游',
+    stem: '箫鼓追随春社近，',
+    answer: '衣冠简朴古风存',
+    hint: '描写春社节日，下句写村民服饰朴素',
+  },
+  {
+    id: 'dc_d2',
+    type: 'dictation',
+    district: 'dongcheng',
+    source: '东城 · 默写',
+    poem: '陋室铭',
+    author: '刘禹锡',
+    stem: '无丝竹之乱耳，',
+    answer: '无案牍之劳形',
+    hint: '两个"无"字对仗，写陋室的清静之美',
+  },
+  {
+    id: 'dc_d3',
+    type: 'dictation',
+    district: 'dongcheng',
+    source: '东城 · 默写',
+    poem: '逢入京使',
+    author: '岑参',
+    stem: '马上相逢无纸笔，',
+    answer: '凭君传语报平安',
+    hint: '边塞诗，托人捎话给家人',
+  },
+  {
+    id: 'dc_d4',
+    type: 'dictation',
+    district: 'dongcheng',
+    source: '东城 · 默写',
+    poem: '游山西村',
+    author: '陆游',
+    stem: '写出表达"绝境中往往蕴藏转机"哲理的诗句：',
+    answer: '山重水复疑无路，柳暗花明又一村',
+    hint: '这是《游山西村》中最著名的两句',
+  },
+
+  // ── 默写 · 西城区 ──
+  {
+    id: 'xc_d1',
+    type: 'dictation',
+    district: 'xicheng',
+    source: '西城 · 默写',
+    poem: '泊秦淮',
+    author: '杜牧',
+    stem: '____________，隔江犹唱后庭花。',
+    answer: '商女不知亡国恨',
+    hint: '批判歌女不懂亡国之痛，实为讽刺当权者',
+  },
+  {
+    id: 'xc_d2',
+    type: 'dictation',
+    district: 'xicheng',
+    source: '西城 · 默写',
+    poem: '己亥杂诗',
+    author: '龚自珍',
+    stem: '写出《己亥杂诗》中以"落花"自比、表达奉献精神的两句：',
+    answer: '落红不是无情物，化作春泥更护花',
+    hint: '落花化为春泥，寄托了诗人对下一代的期望',
+  },
+  {
+    id: 'xc_d3',
+    type: 'dictation',
+    district: 'xicheng',
+    source: '西城 · 默写',
+    poem: '爱莲说',
+    author: '周敦颐',
+    stem: '《爱莲说》中描写莲花茎干正直、不横生旁枝的句子：',
+    answer: '中通外直，不蔓不枝',
+    hint: '这四个字描写莲的形态，也象征君子的品格',
+  },
+
+  // ── 古文实词 · 东城区 ──
+  {
+    id: 'dc_w1',
+    type: 'wenyan',
+    district: 'dongcheng',
+    source: '东城 · 古文',
+    stem: '下列对《孙权劝学》中"辞"字解释，与"蒙辞以军中多务"中"辞"意思相同的是：',
+    options: ['A. 言辞华美', 'B. 推托，拒绝', 'C. 辞别，告别', 'D. 道别的话'],
+    answer: 1,
+    explanation: '"蒙辞以军中多务"中"辞"意为"推托"，吕蒙以军务繁忙为借口拒绝学习。选B。',
+  },
+  {
+    id: 'dc_w2',
+    type: 'wenyan',
+    district: 'dongcheng',
+    source: '东城 · 古文',
+    stem: '下列对《木兰诗》理解有误的一项是：',
+    options: [
+      'A. "东市买骏马……北市买长鞭"用铺陈排比写出征前准备的紧张',
+      'B. "开我东阁门……对镜帖花黄"一连串动作，写木兰归家的喜悦',
+      'C. "雄兔脚扑朔，雌兔眼迷离"用比喻说明木兰未被发现的原因',
+      'D. 诗中用"我"指称木兰，流露出她对自身才能的强烈优越感',
+    ],
+    answer: 3,
+    explanation: 'D项有误。诗末借"雄兔""雌兔"作比，目的是说明女扮男装未被识破的原因，并非表达优越感。',
+  },
+
+  // ── 古文实词 · 西城区 ──
+  {
+    id: 'xc_w1',
+    type: 'wenyan',
+    district: 'xicheng',
+    source: '西城 · 古文',
+    stem: '《活板》中"瞬息可就"的"就"，与下列哪个词语中"就"意思相同？',
+    options: ['A. 就地取材', 'B. 一挥而就（完成）', 'C. 就职典礼', 'D. 半途而废'],
+    answer: 1,
+    explanation: '"瞬息可就"意为"一瞬间就完成了"，"就"意为"完成"。"一挥而就"的"就"同义，选B。',
+  },
+  {
+    id: 'xc_w2',
+    type: 'wenyan',
+    district: 'xicheng',
+    source: '西城 · 古文',
+    stem: '《望岳》中"造化钟神秀，阴阳割昏晓"，"割"字写出泰山什么特点？',
+    options: [
+      'A. 泰山山坡陡峭、危险难攀',
+      'B. 泰山巍峨高大，山南山北判若昏晓',
+      'C. 泰山历史悠久、文化深厚',
+      'D. 泰山横跨齐鲁，连绵不断',
+    ],
+    answer: 1,
+    explanation: '"割"字化静为动，仿佛泰山用一把刀将天地切开，突出其高大雄伟——山南阳光明媚，山北阴暗如暮，答案B。',
+  },
+  {
+    id: 'xc_w3',
+    type: 'wenyan',
+    district: 'xicheng',
+    source: '西城 · 古文',
+    stem: '对《活板》中"神速"的理解，正确的是：',
+    options: [
+      'A. 体现活字印刷效率高，展示古代劳动人民智慧',
+      'B. 说明毕昇一人独立完成了整个印刷过程',
+      'C. 强调活字印刷术已被全国广泛普及',
+      'D. 指活字排版与雕版刻字速度完全一样',
+    ],
+    answer: 0,
+    explanation: '"神速"体现活字印刷远超雕版的效率，正确答案A。',
+  },
+
+  // ── 阅读选择 · 东城区 ──
+  {
+    id: 'dc_r1',
+    type: 'reading',
+    district: 'dongcheng',
+    source: '东城 · 阅读',
+    stem: '材料说明"竹"意象，甲材料侧重：',
+    options: [
+      'A. 介绍"竹"意象的文化意蕴发展历程',
+      'B. 表现"竹"营造宁静写意氛围的作用',
+      'C. 象征红军坚贞不屈的革命精神',
+      'D. 分析"竹"在不同诗人笔下的差异',
+    ],
+    answer: 0,
+    explanation: '甲材料梳理"竹"意象从先秦至清代的文化意蕴演变，侧重发展历程，选A。',
+  },
+  {
+    id: 'dc_r2',
+    type: 'reading',
+    district: 'dongcheng',
+    source: '东城 · 阅读',
+    stem: '文章《此生无愧"中国心"》写吴大观"中国心"的含义，下列理解最全面的是：',
+    options: [
+      'A. 指中国人自主研制的航空发动机',
+      'B. 仅指吴大观对祖国的思念之情',
+      'C. 既指航空发动机，更象征爱国心与奉献精神',
+      'D. 指他在中国工作了一辈子的忠诚',
+    ],
+    answer: 2,
+    explanation: '"中国心"一词双关：字面指中国自主研制的航空发动机，深层象征爱国热情与无私奉献精神，选C最全面。',
+  },
+
+  // ── 阅读选择 · 西城区 ──
+  {
+    id: 'xc_r1',
+    type: 'reading',
+    district: 'xicheng',
+    source: '西城 · 阅读',
+    stem: '《紫藤花开》中"细枝缠绕、五藤相攀"的象征含义，理解正确的是：',
+    options: [
+      'A. 紫藤长势旺盛，生命力顽强',
+      'B. "细枝缠绕"象征刘先生祖辈兄弟团结，"五藤相攀"象征"我"家兄妹血脉相连',
+      'C. 两者都象征自然界植物的相互依存',
+      'D. "五藤"象征五个民族共同繁荣',
+    ],
+    answer: 1,
+    explanation: '文中"细枝缠绕"对应刘先生爷爷兄弟四人团结面对困难；"五藤相攀"对应"我"家兄妹同根相连，选B。',
+  },
+  {
+    id: 'xc_r2',
+    type: 'reading',
+    district: 'xicheng',
+    source: '西城 · 阅读',
+    stem: '《为大型建筑撑起钢铁架构》中，对文意理解不正确的一项是：',
+    options: [
+      'A. 沈世钊将国家需求作为自己奋斗的目标',
+      'B. 沈世钊独立完成了鸟巢和天眼项目的全部设计',
+      'C. 沈世钊重视育人，学生称他"父辈领着孩子"',
+      'D. 沈世钊甘为人梯，体现了无私奉献的精神',
+    ],
+    answer: 1,
+    explanation: 'B项有误。沈世钊是"参与"而非"独立完成"鸟巢和天眼项目，文章并未说他独立完成，选B。',
+  },
+];
+
+// ══════════════════════════════════════════
+// 状态
+// ══════════════════════════════════════════
+let questions = [];
+let currentIndex = 0;
+let answered = false;
+let correctCount = 0;
+let wrongCount = 0;
+let totalXP = 0;
+let activeFilter = 'all';
+
+// ══════════════════════════════════════════
+// 初始化
+// ══════════════════════════════════════════
+function init() {
+  loadProgress();
+  filterType('all');
+}
+
+function filterType(type) {
+  activeFilter = type;
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  event.target && event.target.classList.add('active');
+
+  if (type === 'all') {
+    questions = shuffle([...ALL_QUESTIONS]).slice(0, 10);
+  } else if (type === 'xicheng') {
+    questions = shuffle(ALL_QUESTIONS.filter(q => q.district === 'xicheng'));
+  } else {
+    questions = shuffle(ALL_QUESTIONS.filter(q => q.type === type));
+  }
+
+  currentIndex = 0;
+  correctCount = 0;
+  wrongCount = 0;
+  totalXP = 0;
+  answered = false;
+
+  document.getElementById('finishScreen').classList.remove('show');
+  document.getElementById('questionArea').style.display = '';
+  renderQuestion();
+  updateProgress();
+}
+
+function shuffle(arr) {
+  return arr.sort(() => Math.random() - 0.5);
+}
+
+// ══════════════════════════════════════════
+// 渲染题目
+// ══════════════════════════════════════════
+function renderQuestion() {
+  if (currentIndex >= questions.length) {
+    showFinish();
+    return;
+  }
+
+  answered = false;
+  const q = questions[currentIndex];
+  const area = document.getElementById('questionArea');
+
+  const tagClass = q.district === 'xicheng' ? 'xicheng' : 'dongcheng';
+  const tagText = q.district === 'xicheng' ? '西城挑战' : '东城';
+
+  let bodyHTML = '';
+
+  if (q.type === 'dictation') {
+    bodyHTML = `
+      <div class="q-stem">
+        ${q.poem ? `<span class="poem-line">《${q.poem}》</span>` : ''}
+        ${q.stem}
+      </div>
+      <input class="fill-input" id="fillInput" type="text"
+        placeholder="在此输入答案……" autocomplete="off"
+        onkeydown="if(event.key==='Enter')submitAnswer()" />
+      <div class="feedback" id="feedback"></div>
+      <button class="submit-btn" id="submitBtn" onclick="submitAnswer()">提交答案</button>
+      <button class="next-btn" id="nextBtn" onclick="nextQuestion()">下一题 →</button>
+    `;
+  } else {
+    const opts = q.options.map((o, i) => `
+      <div class="option" id="opt_${i}" onclick="selectOption(${i})">
+        <div class="opt-label">${String.fromCharCode(65+i)}</div>
+        <div>${o.replace(/^[A-D]\.\s*/, '')}</div>
+      </div>
+    `).join('');
+    bodyHTML = `
+      <div class="q-stem">${q.stem}</div>
+      <div class="options">${opts}</div>
+      <div class="feedback" id="feedback"></div>
+      <button class="next-btn" id="nextBtn" onclick="nextQuestion()">下一题 →</button>
+    `;
+  }
+
+  area.innerHTML = `
+    <div class="q-card">
+      <div class="q-header">
+        <span class="q-num">Q${currentIndex + 1}</span>
+        <span class="q-tag ${tagClass}">${tagText}</span>
+        <span class="q-source">${q.source}</span>
+      </div>
+      ${bodyHTML}
+    </div>
+  `;
+
+  if (q.type === 'dictation') {
+    setTimeout(() => document.getElementById('fillInput')?.focus(), 100);
+  }
+}
+
+// ══════════════════════════════════════════
+// 答题逻辑
+// ══════════════════════════════════════════
+function submitAnswer() {
+  if (answered) return;
+  const q = questions[currentIndex];
+  const input = document.getElementById('fillInput');
+  if (!input) return;
+
+  const userVal = input.value.trim();
+  if (!userVal) return;
+
+  answered = true;
+  const isCorrect = normalizeAnswer(userVal) === normalizeAnswer(q.answer);
+
+  const fb = document.getElementById('feedback');
+  if (isCorrect) {
+    input.classList.add('correct');
+    fb.className = 'feedback correct-fb show';
+    fb.innerHTML = `<span class="fb-icon">✅</span> 完美！赛道策略执行准确。`;
+    earnXP(10);
+    correctCount++;
+  } else {
+    input.classList.add('wrong');
+    fb.className = 'feedback wrong-fb show';
+    fb.innerHTML = `
+      <span class="fb-icon">❌</span> 答案有偏差，记录故障日志：
+      <div class="answer-reveal">正确答案：${q.answer}${q.hint ? '<br><span style="color:var(--muted)">💡 ' + q.hint + '</span>' : ''}</div>
+    `;
+    wrongCount++;
+    saveWrongQuestion(q);
+  }
+
+  document.getElementById('submitBtn').disabled = true;
+  document.getElementById('nextBtn').classList.add('show');
+}
+
+function selectOption(idx) {
+  if (answered) return;
+  const q = questions[currentIndex];
+  answered = true;
+
+  document.querySelectorAll('.option').forEach(el => el.classList.remove('selected'));
+  document.getElementById(`opt_${idx}`).classList.add('selected');
+
+  const isCorrect = idx === q.answer;
+  const fb = document.getElementById('feedback');
+
+  setTimeout(() => {
+    document.querySelectorAll('.option').forEach((el, i) => {
+      if (i === q.answer) el.classList.add('correct');
+    });
+    if (!isCorrect) {
+      document.getElementById(`opt_${idx}`).classList.add('wrong');
+    }
+
+    if (isCorrect) {
+      fb.className = 'feedback correct-fb show';
+      fb.innerHTML = `<span class="fb-icon">✅</span> 正确！赛道策略判断准确。`;
+      earnXP(10);
+      correctCount++;
+    } else {
+      fb.className = 'feedback wrong-fb show';
+      fb.innerHTML = `
+        <span class="fb-icon">❌</span> 选错了，记录故障日志：
+        <div class="answer-reveal">正确答案：${String.fromCharCode(65 + q.answer)}
+        <br><span style="color:var(--muted)">💡 ${q.explanation}</span></div>
+      `;
+      wrongCount++;
+      saveWrongQuestion(q);
+    }
+    document.getElementById('nextBtn').classList.add('show');
+  }, 200);
+}
+
+function normalizeAnswer(s) {
+  return s.replace(/[，。！？、\s]/g, '').toLowerCase();
+}
+
+function nextQuestion() {
+  currentIndex++;
+  updateProgress();
+  renderQuestion();
+}
+
+function restartSession() {
+  document.getElementById('finishScreen').classList.remove('show');
+  document.getElementById('questionArea').style.display = '';
+  filterType(activeFilter);
+}
+
+// ══════════════════════════════════════════
+// 进度 & 积分
+// ══════════════════════════════════════════
+function updateProgress() {
+  const total = questions.length;
+  const done = Math.min(currentIndex, total);
+  document.getElementById('progressLabel').textContent = `第 ${done + 1} 题 / 共 ${total} 题`;
+  document.getElementById('progressScore').textContent = `${totalXP} XP`;
+  document.getElementById('progressFill').style.width = `${(done / total) * 100}%`;
+}
+
+function earnXP(amount) {
+  totalXP += amount;
+  document.getElementById('progressScore').textContent = `${totalXP} XP`;
+  const toast = document.getElementById('xpToast');
+  toast.textContent = `+${amount} XP`;
+  toast.classList.add('show');
+  setTimeout(() => toast.classList.remove('show'), 1500);
+
+  // 写 localStorage
+  const todayKey = getTodayKey();
+  const stored = JSON.parse(localStorage.getItem('pizong_xp') || '{}');
+  stored[todayKey] = (stored[todayKey] || 0) + amount;
+  localStorage.setItem('pizong_xp', JSON.stringify(stored));
+}
+
+function showFinish() {
+  document.getElementById('questionArea').style.display = 'none';
+  const screen = document.getElementById('finishScreen');
+  screen.classList.add('show');
+
+  const total = correctCount + wrongCount;
+  const rate = total > 0 ? Math.round((correctCount / total) * 100) : 0;
+
+  document.getElementById('scoreNum').textContent = rate + '%';
+  document.getElementById('statCorrect').textContent = correctCount;
+  document.getElementById('statWrong').textContent = wrongCount;
+  document.getElementById('statXP').textContent = totalXP;
+
+  // 圆弧动画
+  const arc = document.getElementById('scoreArc');
+  const offset = 314 - (314 * rate / 100);
+  setTimeout(() => { arc.style.transition = 'stroke-dashoffset 1s ease'; arc.style.strokeDashoffset = offset; }, 100);
+
+  if (rate === 100) {
+    document.getElementById('finishTrophy').textContent = '🏆';
+    document.getElementById('finishTitle').textContent = '完美圈速！';
+    document.getElementById('finishSub').textContent = '全部答对，引擎调校完毕！';
+  } else if (rate >= 70) {
+    document.getElementById('finishTrophy').textContent = '🥈';
+    document.getElementById('finishTitle').textContent = '圈速不错！';
+    document.getElementById('finishSub').textContent = `正确率 ${rate}%，继续优化赛道策略`;
+  } else {
+    document.getElementById('finishTrophy').textContent = '🔧';
+    document.getElementById('finishTitle').textContent = '需要继续调校';
+    document.getElementById('finishSub').textContent = `正确率 ${rate}%，查看故障日志找原因`;
+  }
+
+  // 保存今日训练记录
+  saveDailyRecord(rate);
+}
+
+// ══════════════════════════════════════════
+// localStorage
+// ══════════════════════════════════════════
+function getTodayKey() {
+  const d = new Date();
+  return `${d.getFullYear()}-${d.getMonth()+1}-${d.getDate()}`;
+}
+
+function saveDailyRecord(rate) {
+  const key = getTodayKey();
+  const records = JSON.parse(localStorage.getItem('pizong_daily') || '{}');
+  if (!records[key]) records[key] = { sessions: 0, bestRate: 0, totalXP: 0 };
+  records[key].sessions += 1;
+  records[key].bestRate = Math.max(records[key].bestRate, rate);
+  records[key].totalXP += totalXP;
+  localStorage.setItem('pizong_daily', JSON.stringify(records));
+}
+
+function saveWrongQuestion(q) {
+  const wrongs = JSON.parse(localStorage.getItem('pizong_wrongs') || '[]');
+  if (!wrongs.find(w => w.id === q.id)) {
+    wrongs.push({ id: q.id, source: q.source, stem: q.stem.substring(0, 40), date: getTodayKey() });
+  }
+  localStorage.setItem('pizong_wrongs', JSON.stringify(wrongs));
+}
+
+function loadProgress() {
+  // 未来：显示历史最高记录
+}
+
+// ══════════════════════════════════════════
+init();
+</script>
+</body>
+</html>
