@@ -1,0 +1,884 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+  <title>赛前测试圈 · 语文赛车手</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    :root {
+      --red: #E8002D;
+      --yellow: #F5A623;
+      --green: #00D4AA;
+      --bg: #0F0F1A;
+      --card: #1A1A2E;
+      --card2: #20203A;
+      --border: rgba(255,255,255,0.08);
+      --text: #FFFFFF;
+      --muted: #8888AA;
+    }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: -apple-system, 'PingFang SC', 'Helvetica Neue', sans-serif;
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+    }
+
+    .phone {
+      width: 100%;
+      max-width: 480px;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* ── 顶栏 ── */
+    .header {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 52px 20px 16px;
+    }
+    .back-btn {
+      width: 36px; height: 36px;
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      display: flex; align-items: center; justify-content: center;
+      cursor: pointer;
+      font-size: 16px;
+      text-decoration: none;
+      color: var(--text);
+      flex-shrink: 0;
+    }
+    .header-info { flex: 1; }
+    .header-title {
+      font-size: 16px;
+      font-weight: 700;
+      letter-spacing: 0.5px;
+    }
+    .header-sub {
+      font-size: 11px;
+      color: var(--muted);
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      margin-top: 2px;
+    }
+
+    /* ── 进度轨道 ── */
+    .progress-track {
+      padding: 0 20px 20px;
+    }
+    .track-bar {
+      height: 3px;
+      background: rgba(255,255,255,0.06);
+      border-radius: 2px;
+      overflow: hidden;
+      margin-bottom: 6px;
+    }
+    .track-fill {
+      height: 100%;
+      background: var(--red);
+      border-radius: 2px;
+      transition: width 0.5s ease;
+    }
+    .track-labels {
+      display: flex;
+      justify-content: space-between;
+      font-size: 10px;
+      color: var(--muted);
+    }
+
+    /* ── 聊天区域 ── */
+    .chat-area {
+      flex: 1;
+      padding: 0 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      overflow-y: auto;
+    }
+
+    /* 工程师消息（左侧）*/
+    .msg-engineer {
+      display: flex;
+      gap: 10px;
+      align-items: flex-start;
+      animation: fadeInUp 0.4s ease;
+    }
+    .engineer-avatar {
+      width: 36px; height: 36px;
+      background: linear-gradient(135deg, var(--red), #C0001F);
+      border-radius: 10px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 18px;
+      flex-shrink: 0;
+    }
+    .engineer-bubble {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 4px 14px 14px 14px;
+      padding: 12px 14px;
+      max-width: calc(100% - 56px);
+    }
+    .engineer-name {
+      font-size: 10px;
+      color: var(--red);
+      font-weight: 700;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      margin-bottom: 6px;
+    }
+    .engineer-text {
+      font-size: 14px;
+      line-height: 1.6;
+      color: var(--text);
+    }
+
+    /* 用户消息（右侧）*/
+    .msg-user {
+      display: flex;
+      justify-content: flex-end;
+      animation: fadeInUp 0.3s ease;
+    }
+    .user-bubble {
+      background: linear-gradient(135deg, var(--red), #C0001F);
+      border-radius: 14px 4px 14px 14px;
+      padding: 10px 14px;
+      max-width: 80%;
+      font-size: 14px;
+      line-height: 1.5;
+    }
+
+    /* ── 选项区 ── */
+    .options-area {
+      padding: 12px 16px 8px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      animation: fadeInUp 0.4s ease;
+    }
+    .options-area.hidden { display: none; }
+
+    .option-btn {
+      width: 100%;
+      padding: 12px 16px;
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      color: var(--text);
+      font-size: 14px;
+      text-align: left;
+      cursor: pointer;
+      transition: all 0.2s;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .option-btn:active, .option-btn:hover {
+      border-color: var(--red);
+      background: rgba(232,0,45,0.08);
+    }
+    .option-btn.selected {
+      border-color: var(--red);
+      background: rgba(232,0,45,0.12);
+    }
+    .option-icon {
+      width: 28px; height: 28px;
+      background: rgba(255,255,255,0.06);
+      border-radius: 6px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 14px;
+      flex-shrink: 0;
+    }
+
+    /* ── 文字输入区 ── */
+    .input-area {
+      padding: 8px 16px 12px;
+      animation: fadeInUp 0.4s ease;
+    }
+    .input-area.hidden { display: none; }
+    .input-wrap {
+      display: flex;
+      gap: 8px;
+      align-items: flex-end;
+    }
+    .text-input {
+      flex: 1;
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 12px 14px;
+      color: var(--text);
+      font-size: 14px;
+      font-family: inherit;
+      resize: none;
+      outline: none;
+      line-height: 1.5;
+      min-height: 46px;
+      max-height: 120px;
+    }
+    .text-input:focus { border-color: rgba(232,0,45,0.5); }
+    .text-input::placeholder { color: var(--muted); }
+    .send-btn {
+      width: 46px; height: 46px;
+      background: var(--red);
+      border: none;
+      border-radius: 12px;
+      color: white;
+      font-size: 18px;
+      cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0;
+      transition: opacity 0.2s;
+    }
+    .send-btn:disabled { opacity: 0.3; cursor: default; }
+
+    /* ── 上传区 ── */
+    .upload-area {
+      padding: 8px 16px 12px;
+      animation: fadeInUp 0.4s ease;
+    }
+    .upload-area.hidden { display: none; }
+    .upload-card {
+      background: var(--card);
+      border: 1px dashed rgba(245,166,35,0.4);
+      border-radius: 12px;
+      padding: 20px;
+      text-align: center;
+      cursor: pointer;
+    }
+    .upload-card:active { background: rgba(245,166,35,0.05); }
+    .upload-icon { font-size: 32px; margin-bottom: 8px; }
+    .upload-title { font-size: 14px; font-weight: 600; color: var(--yellow); }
+    .upload-sub { font-size: 12px; color: var(--muted); margin-top: 4px; }
+    .upload-btns {
+      display: flex;
+      gap: 8px;
+      margin-top: 12px;
+    }
+    .upload-btn {
+      flex: 1;
+      padding: 10px;
+      border-radius: 8px;
+      border: none;
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+    }
+    .upload-btn.primary {
+      background: var(--yellow);
+      color: #0F0F1A;
+    }
+    .upload-btn.secondary {
+      background: rgba(255,255,255,0.06);
+      color: var(--muted);
+      border: 1px solid var(--border);
+    }
+
+    /* ── 报告页 ── */
+    .report-area {
+      padding: 16px;
+      display: none;
+      flex-direction: column;
+      gap: 12px;
+      animation: fadeInUp 0.5s ease;
+    }
+    .report-area.show { display: flex; }
+
+    .report-title {
+      font-size: 11px;
+      color: var(--muted);
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      text-align: center;
+      margin-bottom: 4px;
+    }
+    .report-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 16px;
+    }
+    .report-module {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 12px;
+    }
+    .report-module:last-child { margin-bottom: 0; }
+    .report-emoji { font-size: 20px; width: 28px; text-align: center; }
+    .report-module-info { flex: 1; }
+    .report-module-name { font-size: 13px; font-weight: 600; }
+    .report-module-sub { font-size: 11px; color: var(--muted); margin-top: 2px; }
+    .report-bar-wrap { flex: 1; }
+    .report-bar {
+      height: 6px;
+      background: rgba(255,255,255,0.06);
+      border-radius: 3px;
+      overflow: hidden;
+    }
+    .report-bar-fill {
+      height: 100%;
+      border-radius: 3px;
+      transition: width 1s ease 0.3s;
+    }
+    .bar-red { background: var(--red); }
+    .bar-yellow { background: var(--yellow); }
+    .bar-green { background: var(--green); }
+    .report-pct {
+      font-size: 12px;
+      font-weight: 700;
+      width: 32px;
+      text-align: right;
+    }
+    .report-pct.red { color: var(--red); }
+    .report-pct.yellow { color: var(--yellow); }
+    .report-pct.green { color: var(--green); }
+
+    .report-suggestion {
+      background: rgba(232,0,45,0.08);
+      border: 1px solid rgba(232,0,45,0.2);
+      border-radius: 10px;
+      padding: 12px 14px;
+      font-size: 13px;
+      line-height: 1.6;
+      color: var(--text);
+    }
+    .report-suggestion strong { color: var(--yellow); }
+
+    .start-race-btn {
+      width: 100%;
+      padding: 16px;
+      background: linear-gradient(135deg, var(--red), #C0001F);
+      border: none;
+      border-radius: 12px;
+      color: white;
+      font-size: 16px;
+      font-weight: 800;
+      letter-spacing: 1px;
+      cursor: pointer;
+      box-shadow: 0 4px 20px rgba(232,0,45,0.4);
+    }
+
+    /* ── 动画 ── */
+    @keyframes fadeInUp {
+      from { opacity: 0; transform: translateY(12px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    .typing {
+      display: flex;
+      gap: 4px;
+      padding: 4px 0;
+    }
+    .typing span {
+      width: 6px; height: 6px;
+      background: var(--muted);
+      border-radius: 50%;
+      animation: bounce 1.2s infinite;
+    }
+    .typing span:nth-child(2) { animation-delay: 0.2s; }
+    .typing span:nth-child(3) { animation-delay: 0.4s; }
+    @keyframes bounce {
+      0%, 60%, 100% { transform: translateY(0); }
+      30% { transform: translateY(-6px); }
+    }
+
+    .spacer { height: 16px; }
+  </style>
+</head>
+<body>
+<div class="phone">
+
+  <!-- 顶栏 -->
+  <div class="header">
+    <a href="index.html" class="back-btn">←</a>
+    <div class="header-info">
+      <div class="header-title">赛前测试圈</div>
+      <div class="header-sub">PRE-RACE DIAGNOSIS</div>
+    </div>
+    <div style="font-size:11px;color:var(--muted);text-align:right;">
+      <div id="step-label" style="font-weight:700;color:var(--yellow);">1 / 5</div>
+      <div>问题</div>
+    </div>
+  </div>
+
+  <!-- 进度条 -->
+  <div class="progress-track">
+    <div class="track-bar">
+      <div class="track-fill" id="progress-fill" style="width:20%"></div>
+    </div>
+    <div class="track-labels">
+      <span>START</span>
+      <span id="progress-text">诊断中</span>
+      <span>REPORT</span>
+    </div>
+  </div>
+
+  <!-- 聊天区 -->
+  <div class="chat-area" id="chat-area">
+    <!-- 消息动态插入 -->
+  </div>
+
+  <!-- 选项区 -->
+  <div class="options-area hidden" id="options-area"></div>
+
+  <!-- 文字输入区 -->
+  <div class="input-area hidden" id="input-area">
+    <div class="input-wrap">
+      <textarea class="text-input" id="text-input" placeholder="说说你的情况…" rows="1"
+        oninput="autoResize(this)"></textarea>
+      <button class="send-btn" id="send-btn" onclick="submitText()">↑</button>
+    </div>
+  </div>
+
+  <!-- 上传区 -->
+  <div class="upload-area hidden" id="upload-area">
+    <div class="upload-card">
+      <div class="upload-icon">📄</div>
+      <div class="upload-title">上传你的语文试卷</div>
+      <div class="upload-sub">拍张照片，工程师帮你找漏油点</div>
+      <div class="upload-btns">
+        <button class="upload-btn primary" onclick="simulateUpload()">📷 拍照上传</button>
+        <button class="upload-btn secondary" onclick="skipUpload()">跳过这步</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 诊断报告（最后显示）-->
+  <div class="report-area" id="report-area">
+    <div class="report-title">🏁 车辆诊断报告 · DIAGNOSIS COMPLETE</div>
+
+    <div class="report-card">
+      <div class="report-module">
+        <span class="report-emoji">🔧</span>
+        <div class="report-module-info">
+          <div class="report-module-name">引擎调校 · 语基</div>
+          <div class="report-module-sub">字音字形·成语·病句</div>
+        </div>
+        <div class="report-bar-wrap">
+          <div class="report-bar">
+            <div class="report-bar-fill bar-yellow" id="bar-yuji" style="width:0%"></div>
+          </div>
+        </div>
+        <span class="report-pct yellow" id="pct-yuji">—</span>
+      </div>
+
+      <div class="report-module">
+        <span class="report-emoji">🗺️</span>
+        <div class="report-module-info">
+          <div class="report-module-name">赛道记忆 · 古诗文</div>
+          <div class="report-module-sub">默写·实词·文言翻译</div>
+        </div>
+        <div class="report-bar-wrap">
+          <div class="report-bar">
+            <div class="report-bar-fill bar-red" id="bar-guwen" style="width:0%"></div>
+          </div>
+        </div>
+        <span class="report-pct red" id="pct-guwen">—</span>
+      </div>
+
+      <div class="report-module">
+        <span class="report-emoji">📡</span>
+        <div class="report-module-info">
+          <div class="report-module-name">实时策略 · 阅读理解</div>
+          <div class="report-module-sub">句子赏析·主旨概括</div>
+        </div>
+        <div class="report-bar-wrap">
+          <div class="report-bar">
+            <div class="report-bar-fill bar-red" id="bar-yudu" style="width:0%"></div>
+          </div>
+        </div>
+        <span class="report-pct red" id="pct-yudu">—</span>
+      </div>
+
+      <div class="report-module">
+        <span class="report-emoji">✍️</span>
+        <div class="report-module-info">
+          <div class="report-module-name">车手自述 · 作文</div>
+          <div class="report-module-sub">开头·细节·结构·升华</div>
+        </div>
+        <div class="report-bar-wrap">
+          <div class="report-bar">
+            <div class="report-bar-fill bar-yellow" id="bar-zuowen" style="width:0%"></div>
+          </div>
+        </div>
+        <span class="report-pct yellow" id="pct-zuowen">—</span>
+      </div>
+    </div>
+
+    <div class="report-suggestion" id="report-suggestion">
+      工程师建议加载中…
+    </div>
+
+    <button class="start-race-btn" onclick="location.href='index.html'">
+      开始今日训练 · START LAP 🏎️
+    </button>
+
+    <div class="spacer"></div>
+  </div>
+
+</div>
+
+<script>
+// ── 问题数据 ──
+function getDaysLeft() {
+  const exam = new Date('2026-06-28');
+  const today = new Date();
+  return Math.max(1, Math.ceil((exam - today) / (1000 * 60 * 60 * 24)));
+}
+
+const questions = [
+  {
+    id: 'score',
+    type: 'text',
+    engineerMsg: '嘿，我是你的赛车工程师。🏎️\n\n期末正赛还有 ' + getDaysLeft() + ' 天，赛前我需要先做一次车辆检测，这样才能帮你制定最准的训练计划。\n\n先说说：上次语文期中考了多少分？你觉得主要丢在哪里？',
+    placeholder: '比如：78分，阅读理解不知道怎么答，古诗词也漏了几句…',
+  },
+  {
+    id: 'mofa',
+    type: 'choice',
+    engineerMsg: '好，记下来了。\n\n先测一下「赛道记忆」系统——下面这句诗，你能背出来吗？\n\n「_______，化作春泥更护花。」\n（龚自珍《己亥杂诗》）',
+    options: [
+      { icon: '✅', text: '能背：落红不是无情物' },
+      { icon: '⚠️', text: '大概知道，但不确定字对不对' },
+      { icon: '❌', text: '背不出来' },
+    ]
+  },
+  {
+    id: 'wenyan',
+    type: 'choice',
+    engineerMsg: '明白。\n\n再测文言文——《孙权劝学》里，吕蒙说的「士别三日，即更刮目相待」，"更"是什么意思？',
+    options: [
+      { icon: '✅', text: '重新（答对了）' },
+      { icon: '❌', text: '更加（答错了）' },
+      { icon: '🤷', text: '完全不知道' },
+    ]
+  },
+  {
+    id: 'yudu',
+    type: 'choice',
+    engineerMsg: '了解。\n\n现在测「实时策略」系统——阅读理解里，老师最常出这种题：\n\n「请分析画线句子的表达效果。」\n\n你做这种题的时候，通常怎么样？',
+    options: [
+      { icon: '❓', text: '不知道从哪里入手，直接空着' },
+      { icon: '📝', text: '能写几句，但感觉答得不完整' },
+      { icon: '💡', text: '知道要答手法+内容+效果，但组织起来有点乱' },
+    ]
+  },
+  {
+    id: 'zuowen',
+    type: 'choice',
+    engineerMsg: '好。最后测「车手自述」——作文这块，你上次考了多少分？（满分40分）',
+    options: [
+      { icon: '🔴', text: '30分及以下' },
+      { icon: '🟡', text: '31—35分' },
+      { icon: '🟢', text: '36分及以上' },
+    ]
+  },
+];
+
+// ── 状态 ──
+let currentStep = 0;
+let answers = {};
+let isTyping = false;
+
+// ── 初始化 ──
+window.onload = () => {
+  setTimeout(() => showEngineerMsg(questions[0].engineerMsg, () => {
+    showInput(questions[0]);
+  }), 500);
+};
+
+// ── 显示工程师消息 ──
+function showEngineerMsg(text, callback) {
+  const chat = document.getElementById('chat-area');
+
+  // 先显示typing
+  const typingEl = document.createElement('div');
+  typingEl.className = 'msg-engineer';
+  typingEl.innerHTML = `
+    <div class="engineer-avatar">🔧</div>
+    <div class="engineer-bubble">
+      <div class="engineer-name">RACE ENGINEER</div>
+      <div class="typing"><span></span><span></span><span></span></div>
+    </div>
+  `;
+  chat.appendChild(typingEl);
+  scrollBottom();
+
+  // 延迟后替换为真实内容
+  setTimeout(() => {
+    typingEl.remove();
+    const msgEl = document.createElement('div');
+    msgEl.className = 'msg-engineer';
+    msgEl.innerHTML = `
+      <div class="engineer-avatar">🔧</div>
+      <div class="engineer-bubble">
+        <div class="engineer-name">RACE ENGINEER</div>
+        <div class="engineer-text">${text.replace(/\n/g, '<br>')}</div>
+      </div>
+    `;
+    chat.appendChild(msgEl);
+    scrollBottom();
+    if (callback) setTimeout(callback, 300);
+  }, 1000);
+}
+
+// ── 显示输入方式 ──
+function showInput(q) {
+  hideAllInputs();
+  if (q.type === 'text') {
+    const area = document.getElementById('input-area');
+    const input = document.getElementById('text-input');
+    area.classList.remove('hidden');
+    input.placeholder = q.placeholder || '说说你的情况…';
+    input.value = '';
+    input.focus();
+  } else if (q.type === 'choice') {
+    const area = document.getElementById('options-area');
+    area.innerHTML = '';
+    area.classList.remove('hidden');
+    q.options.forEach((opt, i) => {
+      const btn = document.createElement('button');
+      btn.className = 'option-btn';
+      btn.innerHTML = `<div class="option-icon">${opt.icon}</div><span>${opt.text}</span>`;
+      btn.onclick = () => selectOption(opt.text, btn);
+      area.appendChild(btn);
+    });
+  }
+}
+
+// ── 选择选项 ──
+function selectOption(text, btn) {
+  document.querySelectorAll('.option-btn').forEach(b => b.classList.remove('selected'));
+  btn.classList.add('selected');
+  setTimeout(() => submitAnswer(text), 300);
+}
+
+// ── 提交文字 ──
+function submitText() {
+  const input = document.getElementById('text-input');
+  const text = input.value.trim();
+  if (!text) return;
+  submitAnswer(text);
+}
+
+// ── 提交答案 ──
+function submitAnswer(text) {
+  const q = questions[currentStep];
+  answers[q.id] = text;
+
+  // 显示用户消息
+  const chat = document.getElementById('chat-area');
+  const userEl = document.createElement('div');
+  userEl.className = 'msg-user';
+  userEl.innerHTML = `<div class="user-bubble">${text}</div>`;
+  chat.appendChild(userEl);
+  scrollBottom();
+
+  hideAllInputs();
+  currentStep++;
+  updateProgress();
+
+  if (currentStep < questions.length) {
+    setTimeout(() => {
+      showEngineerMsg(questions[currentStep].engineerMsg, () => {
+        showInput(questions[currentStep]);
+      });
+    }, 500);
+  } else {
+    // 问卷结束，显示上传
+    setTimeout(() => {
+      showEngineerMsg('收到！数据分析中……\n\n还有一件事：如果你手边有最近的语文试卷，拍张照上传，我可以帮你找到每个模块的具体漏油点。\n\n没有也完全没关系，跳过就行。', () => {
+        document.getElementById('upload-area').classList.remove('hidden');
+      });
+    }, 500);
+  }
+}
+
+// ── 模拟上传 ──
+function simulateUpload() {
+  document.getElementById('upload-area').classList.add('hidden');
+  const chat = document.getElementById('chat-area');
+  const userEl = document.createElement('div');
+  userEl.className = 'msg-user';
+  userEl.innerHTML = `<div class="user-bubble">📷 试卷已上传</div>`;
+  chat.appendChild(userEl);
+  scrollBottom();
+  showReport(true);
+}
+
+function skipUpload() {
+  document.getElementById('upload-area').classList.add('hidden');
+  const chat = document.getElementById('chat-area');
+  const userEl = document.createElement('div');
+  userEl.className = 'msg-user';
+  userEl.innerHTML = `<div class="user-bubble">跳过，直接看报告</div>`;
+  chat.appendChild(userEl);
+  scrollBottom();
+  showReport(false);
+}
+
+// ── 生成诊断报告 ──
+function showReport(hasUpload) {
+  setTimeout(() => {
+    showEngineerMsg('✅ 分析完成！\n\n根据你的情况，我帮你生成了车辆诊断报告，往下看👇', () => {
+      setTimeout(() => {
+        hideAllInputs();
+        updateProgress(true);
+
+        // 根据答案计算各模块分数
+        const scores = calcScores();
+
+        // 更新报告UI
+        setTimeout(() => {
+          setBar('yuji', scores.yuji);
+          setBar('guwen', scores.guwen);
+          setBar('yudu', scores.yudu);
+          setBar('zuowen', scores.zuowen);
+
+          // 生成建议
+          document.getElementById('report-suggestion').innerHTML = buildSuggestion(scores);
+
+          document.getElementById('report-area').classList.add('show');
+          scrollBottom();
+        }, 300);
+      }, 500);
+    });
+  }, 600);
+}
+
+function calcScores() {
+  let scores = { yuji: 60, guwen: 50, yudu: 50, zuowen: 60 };
+
+  // 古诗文默写
+  if (answers.mofa) {
+    if (answers.mofa.includes('落红不是无情物')) scores.guwen = 75;
+    else if (answers.mofa.includes('不确定')) scores.guwen = 50;
+    else scores.guwen = 30;
+  }
+
+  // 文言文实词
+  if (answers.wenyan) {
+    if (answers.wenyan.includes('重新')) {
+      scores.guwen = Math.min(scores.guwen + 10, 85); // 答对加分
+    } else if (answers.wenyan.includes('完全不知道')) {
+      scores.guwen = Math.max(scores.guwen - 15, 25); // 完全不会大减
+    } else {
+      scores.guwen = Math.max(scores.guwen - 5, 30);  // 答错小减
+    }
+  }
+
+  // 阅读理解
+  if (answers.yudu) {
+    if (answers.yudu.includes('直接空着')) scores.yudu = 25;
+    else if (answers.yudu.includes('不完整')) scores.yudu = 50;
+    else scores.yudu = 65; // 知道框架但乱
+  }
+
+  // 作文
+  if (answers.zuowen) {
+    if (answers.zuowen.includes('30分及以下')) scores.zuowen = 35;
+    else if (answers.zuowen.includes('31—35')) scores.zuowen = 60;
+    else scores.zuowen = 80;
+  }
+
+  return scores;
+}
+
+// 根据各模块分数生成个性化建议
+function buildSuggestion(scores) {
+  const days = getDaysLeft();
+
+  const tips = {
+    'yuji': '语基是送分题，每天5道字音/成语练习，保证零失分。',
+    'guwen': '古诗文得分空间大——默写全对就稳拿10分，再攻文言实词，每天背3个词。',
+    'yudu': '阅读理解有公式可套：①点手法 ②写内容 ③说效果，三步走就不会跑偏。',
+    'zuowen': '作文最快见效：练好开头的三种模板，一个好开头直接拉高印象分。',
+  };
+
+  const moduleNames = {
+    yuji: '引擎调校（语基）',
+    guwen: '赛道记忆（古诗文）',
+    yudu: '实时策略（阅读理解）',
+    zuowen: '车手自述（作文）',
+  };
+
+  const w1key = getWeakestKeys(scores)[0];
+  const w2key = getWeakestKeys(scores)[1];
+
+  return `<strong>工程师建议：</strong><br><br>` +
+    `🔴 最需要维修：<strong style="color:var(--yellow)">${moduleNames[w1key]}</strong><br>` +
+    `→ ${tips[w1key]}<br><br>` +
+    `🟡 同步强化：<strong style="color:var(--yellow)">${moduleNames[w2key]}</strong><br>` +
+    `→ ${tips[w2key]}<br><br>` +
+    `距首场正赛还有 <strong style="color:var(--yellow)">${days} 天</strong>，每天30分钟，来得及冲到90分。`;
+}
+
+function getWeakestKeys(scores) {
+  return Object.entries(scores).sort((a, b) => a[1] - b[1]).map(([k]) => k);
+}
+
+function setBar(id, pct) {
+  document.getElementById('bar-' + id).style.width = pct + '%';
+  document.getElementById('pct-' + id).textContent = pct + '%';
+}
+
+function getWeakest(scores) {
+  const map = {
+    yuji: '引擎调校（语基）',
+    guwen: '赛道记忆（古诗文）',
+    yudu: '实时策略（阅读理解）',
+    zuowen: '车手自述（作文）'
+  };
+  const sorted = Object.entries(scores).sort((a, b) => a[1] - b[1]);
+  return sorted.slice(0, 2).map(([k]) => map[k]);
+}
+
+// ── 工具函数 ──
+function hideAllInputs() {
+  document.getElementById('options-area').classList.add('hidden');
+  document.getElementById('input-area').classList.add('hidden');
+  document.getElementById('upload-area').classList.add('hidden');
+}
+
+function updateProgress(done) {
+  const pct = done ? 100 : Math.round((currentStep / questions.length) * 80 + 10);
+  document.getElementById('progress-fill').style.width = pct + '%';
+  document.getElementById('progress-text').textContent = done ? '完成' : '诊断中';
+  if (!done) {
+    document.getElementById('step-label').textContent = `${Math.min(currentStep + 1, 5)} / 5`;
+  } else {
+    document.getElementById('step-label').textContent = '完成';
+  }
+}
+
+function scrollBottom() {
+  setTimeout(() => {
+    const chat = document.getElementById('chat-area');
+    chat.scrollTop = chat.scrollHeight;
+    window.scrollTo(0, document.body.scrollHeight);
+  }, 100);
+}
+
+function autoResize(el) {
+  el.style.height = 'auto';
+  el.style.height = Math.min(el.scrollHeight, 120) + 'px';
+}
+
+// 回车发送
+document.addEventListener('keydown', (e) => {
+  if (e.key === 'Enter' && !e.shiftKey && document.activeElement.id === 'text-input') {
+    e.preventDefault();
+    submitText();
+  }
+});
+</script>
+
+</body>
+</html>

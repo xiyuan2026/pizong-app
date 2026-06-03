@@ -1,0 +1,691 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+  <title>语文赛车手</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    :root {
+      --red: #E8002D;
+      --yellow: #F5A623;
+      --green: #00D4AA;
+      --bg: #0F0F1A;
+      --card: #1A1A2E;
+      --card2: #20203A;
+      --border: rgba(255,255,255,0.08);
+      --text: #FFFFFF;
+      --muted: #8888AA;
+    }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: -apple-system, 'PingFang SC', 'Helvetica Neue', sans-serif;
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+    }
+
+    .phone {
+      width: 100%;
+      max-width: 480px;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      position: relative;
+      overflow-x: hidden;
+    }
+
+    /* ── 顶栏 ── */
+    .header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 52px 20px 12px;
+    }
+    .header-label {
+      font-size: 11px;
+      color: var(--muted);
+      letter-spacing: 1px;
+      text-transform: uppercase;
+    }
+    .header-icon {
+      width: 32px; height: 32px;
+      background: rgba(232,0,45,0.15);
+      border: 1px solid rgba(232,0,45,0.3);
+      border-radius: 8px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 16px;
+    }
+
+    /* ── 倒计时英雄区 ── */
+    .hero {
+      text-align: center;
+      padding: 16px 20px 24px;
+      position: relative;
+    }
+    .hero::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 50%;
+      transform: translateX(-50%);
+      width: 200px; height: 200px;
+      background: radial-gradient(circle, rgba(232,0,45,0.12) 0%, transparent 70%);
+      pointer-events: none;
+    }
+    .countdown-number {
+      font-size: 88px;
+      font-weight: 900;
+      color: var(--yellow);
+      line-height: 1;
+      font-variant-numeric: tabular-nums;
+      letter-spacing: -2px;
+      text-shadow: 0 0 40px rgba(245,166,35,0.4);
+    }
+    .countdown-label {
+      font-size: 11px;
+      color: var(--muted);
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      margin-top: 6px;
+    }
+    .countdown-sub {
+      font-size: 12px;
+      color: var(--muted);
+      margin-top: 6px;
+    }
+
+    /* ── 今日训练卡 ── */
+    .section { padding: 0 16px; margin-bottom: 16px; }
+
+    .today-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-left: 3px solid var(--red);
+      border-radius: 14px;
+      padding: 16px;
+    }
+    .card-title-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 4px;
+    }
+    .card-title {
+      font-size: 13px;
+      font-weight: 700;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      color: var(--muted);
+    }
+    .card-subtitle {
+      font-size: 12px;
+      color: var(--muted);
+      margin-bottom: 14px;
+    }
+    .start-btn {
+      width: 100%;
+      padding: 14px;
+      background: linear-gradient(135deg, #E8002D 0%, #C0001F 100%);
+      border: none;
+      border-radius: 10px;
+      color: white;
+      font-size: 16px;
+      font-weight: 800;
+      letter-spacing: 1px;
+      cursor: pointer;
+      box-shadow: 0 4px 20px rgba(232,0,45,0.4);
+      transition: transform 0.1s, box-shadow 0.1s;
+    }
+    .start-btn:active {
+      transform: scale(0.98);
+      box-shadow: 0 2px 10px rgba(232,0,45,0.3);
+    }
+    .task-tags {
+      display: flex;
+      gap: 6px;
+      margin-top: 10px;
+      flex-wrap: wrap;
+    }
+    .tag {
+      font-size: 10px;
+      color: var(--muted);
+      background: rgba(255,255,255,0.05);
+      border-radius: 4px;
+      padding: 3px 7px;
+    }
+
+    /* ── 模块进度 ── */
+    .section-title {
+      font-size: 10px;
+      color: var(--muted);
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      margin-bottom: 10px;
+      padding: 0 4px;
+    }
+    .module-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+    }
+    .module-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 12px;
+    }
+    .module-top {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      margin-bottom: 8px;
+    }
+    .module-emoji { font-size: 18px; }
+    .module-names { flex: 1; }
+    .module-cn { font-size: 13px; font-weight: 600; }
+    .module-en { font-size: 9px; color: var(--muted); letter-spacing: 0.5px; }
+    .progress-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .progress-bar {
+      flex: 1;
+      height: 4px;
+      background: rgba(255,255,255,0.08);
+      border-radius: 2px;
+      overflow: hidden;
+    }
+    .progress-fill {
+      height: 100%;
+      background: var(--red);
+      border-radius: 2px;
+      transition: width 1s ease;
+    }
+    .progress-fill.warn { background: var(--yellow); }
+    .progress-fill.ok { background: var(--green); }
+    .progress-pct {
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--muted);
+      width: 28px;
+      text-align: right;
+    }
+
+    /* ── 积分栏 ── */
+    .points-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 14px 16px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .points-left { flex: 1; }
+    .points-label {
+      font-size: 10px;
+      color: var(--muted);
+      letter-spacing: 2px;
+      text-transform: uppercase;
+    }
+    .points-number {
+      font-size: 36px;
+      font-weight: 900;
+      color: var(--yellow);
+      line-height: 1.1;
+      font-variant-numeric: tabular-nums;
+    }
+    .points-right {
+      text-align: right;
+    }
+    .points-delta {
+      font-size: 12px;
+      color: var(--green);
+      font-weight: 600;
+    }
+    .points-streak {
+      font-size: 11px;
+      color: var(--muted);
+      margin-top: 2px;
+    }
+    .points-bar-wrap {
+      margin-top: 8px;
+    }
+    .points-bar-track {
+      height: 3px;
+      background: rgba(255,255,255,0.06);
+      border-radius: 2px;
+      overflow: hidden;
+    }
+    .points-bar-fill {
+      height: 100%;
+      width: 36%;
+      background: linear-gradient(90deg, var(--yellow), #FFC65C);
+      border-radius: 2px;
+    }
+    .points-bar-label {
+      display: flex;
+      justify-content: space-between;
+      font-size: 9px;
+      color: var(--muted);
+      margin-top: 4px;
+    }
+
+    /* ── 底部导航 ── */
+    .bottom-nav {
+      margin-top: auto;
+      background: #13132A;
+      border-top: 1px solid var(--border);
+      display: flex;
+      padding: 10px 0 28px;
+    }
+    .nav-item {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 4px;
+      cursor: pointer;
+    }
+    .nav-icon { font-size: 20px; }
+    .nav-label {
+      font-size: 10px;
+      color: var(--muted);
+    }
+    .nav-item.active .nav-label { color: var(--red); }
+    .nav-item.active .nav-icon { filter: drop-shadow(0 0 4px rgba(232,0,45,0.6)); }
+
+    /* ── 诊断提示横幅 ── */
+    .banner {
+      margin: 0 16px 16px;
+      background: linear-gradient(135deg, rgba(245,166,35,0.15), rgba(245,166,35,0.05));
+      border: 1px solid rgba(245,166,35,0.3);
+      border-radius: 10px;
+      padding: 10px 14px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      cursor: pointer;
+    }
+    .banner-icon { font-size: 20px; }
+    .banner-text { flex: 1; }
+    .banner-title { font-size: 13px; font-weight: 600; color: var(--yellow); }
+    .banner-sub { font-size: 11px; color: var(--muted); margin-top: 1px; }
+    .banner-arrow { color: var(--yellow); font-size: 16px; }
+
+    /* ── 发车灯弹窗 ── */
+    .lights-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.92);
+      z-index: 1000;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 32px;
+    }
+    .lights-overlay.show { display: flex; }
+
+    .lights-label {
+      font-size: 11px;
+      letter-spacing: 4px;
+      color: #666;
+      text-transform: uppercase;
+    }
+
+    .lights-row {
+      display: flex;
+      gap: 16px;
+      align-items: center;
+    }
+
+    .light {
+      width: 52px;
+      height: 52px;
+      border-radius: 50%;
+      background: #1a0000;
+      border: 3px solid #330000;
+      box-shadow: 0 0 0 0 transparent;
+      transition: background 0.08s, box-shadow 0.08s;
+    }
+    .light.on {
+      background: #E8002D;
+      border-color: #ff3355;
+      box-shadow:
+        0 0 12px 4px rgba(232,0,45,0.8),
+        0 0 30px 8px rgba(232,0,45,0.4),
+        inset 0 0 12px rgba(255,100,120,0.5);
+    }
+
+    .lights-go-text {
+      font-size: 48px;
+      font-weight: 900;
+      letter-spacing: 6px;
+      color: #00D4AA;
+      opacity: 0;
+      transform: scale(0.7);
+      transition: opacity 0.2s, transform 0.2s;
+      text-shadow: 0 0 30px rgba(0,212,170,0.8);
+    }
+    .lights-go-text.show {
+      opacity: 1;
+      transform: scale(1);
+    }
+  </style>
+</head>
+<body>
+<div class="phone">
+
+  <!-- 顶栏 -->
+  <div class="header">
+    <span class="header-label">车队工程师控制台</span>
+    <div class="header-icon">🏎️</div>
+  </div>
+
+  <!-- 倒计时英雄区 -->
+  <div class="hero">
+    <div class="countdown-number" id="countdown">25</div>
+    <div class="countdown-label">DAYS TO RACE</div>
+    <div class="countdown-sub">期末正赛 · 东城区统考</div>
+  </div>
+
+  <!-- 诊断提示横幅（首次使用显示） -->
+  <div class="banner" onclick="location.href='diagnosis.html'">
+    <div class="banner-icon">⚡</div>
+    <div class="banner-text">
+      <div class="banner-title">完成赛前测试圈</div>
+      <div class="banner-sub">诊断各系统状态 · 约20分钟</div>
+    </div>
+    <div class="banner-arrow">›</div>
+  </div>
+
+  <!-- 今日训练卡 -->
+  <div class="section">
+    <div class="today-card">
+      <div class="card-title-row">
+        <span>🏁</span>
+        <span class="card-title">Today's Lap</span>
+      </div>
+      <div class="card-subtitle">今日圈速训练 · 预计30分钟</div>
+      <button class="start-btn" onclick="startLights()">
+        START ENGINE 🚀
+      </button>
+      <div class="task-tags">
+        <span class="tag">🔧 引擎调校·5题</span>
+        <span class="tag">🗺️ 赛道记忆·3题</span>
+        <span class="tag">📡 实时策略·1题</span>
+        <span class="tag">✍️ 车手自述·1句</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- 模块进度 -->
+  <div class="section">
+    <div class="section-title">车辆系统状态</div>
+    <div class="module-grid">
+
+      <div class="module-card">
+        <div class="module-top">
+          <span class="module-emoji">🔧</span>
+          <div class="module-names">
+            <div class="module-cn">引擎调校</div>
+            <div class="module-en">ENGINE TUNING</div>
+          </div>
+        </div>
+        <div class="progress-row">
+          <div class="progress-bar">
+            <div class="progress-fill" style="width:45%"></div>
+          </div>
+          <span class="progress-pct">45%</span>
+        </div>
+      </div>
+
+      <div class="module-card">
+        <div class="module-top">
+          <span class="module-emoji">🗺️</span>
+          <div class="module-names">
+            <div class="module-cn">赛道记忆</div>
+            <div class="module-en">TRACK MEMORY</div>
+          </div>
+        </div>
+        <div class="progress-row">
+          <div class="progress-bar">
+            <div class="progress-fill warn" style="width:30%"></div>
+          </div>
+          <span class="progress-pct">30%</span>
+        </div>
+      </div>
+
+      <div class="module-card">
+        <div class="module-top">
+          <span class="module-emoji">📋</span>
+          <div class="module-names">
+            <div class="module-cn">规则手册</div>
+            <div class="module-en">RULE BOOK</div>
+          </div>
+        </div>
+        <div class="progress-row">
+          <div class="progress-bar">
+            <div class="progress-fill ok" style="width:70%"></div>
+          </div>
+          <span class="progress-pct">70%</span>
+        </div>
+      </div>
+
+      <div class="module-card">
+        <div class="module-top">
+          <span class="module-emoji">📡</span>
+          <div class="module-names">
+            <div class="module-cn">实时策略</div>
+            <div class="module-en">LIVE STRATEGY</div>
+          </div>
+        </div>
+        <div class="progress-row">
+          <div class="progress-bar">
+            <div class="progress-fill warn" style="width:25%"></div>
+          </div>
+          <span class="progress-pct">25%</span>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- 积分栏 -->
+  <div class="section">
+    <div class="points-card">
+      <div class="points-left">
+        <div class="points-label">Season Points</div>
+        <div class="points-number">180</div>
+        <div class="points-bar-wrap">
+          <div class="points-bar-track">
+            <div class="points-bar-fill"></div>
+          </div>
+          <div class="points-bar-label">
+            <span>0</span>
+            <span>下一里程碑 500pts</span>
+          </div>
+        </div>
+      </div>
+      <div class="points-right">
+        <div class="points-delta">↑ +10 今日</div>
+        <div class="points-streak">🔥 连续 3 天</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 底部导航 -->
+  <div class="bottom-nav">
+    <div class="nav-item active">
+      <span class="nav-icon">🏠</span>
+      <span class="nav-label">首页</span>
+    </div>
+    <div class="nav-item">
+      <span class="nav-icon">📚</span>
+      <span class="nav-label">题库</span>
+    </div>
+    <div class="nav-item">
+      <span class="nav-icon">📝</span>
+      <span class="nav-label">作文</span>
+    </div>
+    <div class="nav-item">
+      <span class="nav-icon">👤</span>
+      <span class="nav-label">我的</span>
+    </div>
+  </div>
+
+</div>
+
+<!-- 发车灯弹窗 -->
+<div class="lights-overlay" id="lights-overlay">
+  <div class="lights-label">LIGHTS OUT AND AWAY WE GO</div>
+  <div class="lights-row">
+    <div class="light" id="light-1"></div>
+    <div class="light" id="light-2"></div>
+    <div class="light" id="light-3"></div>
+    <div class="light" id="light-4"></div>
+    <div class="light" id="light-5"></div>
+  </div>
+  <div class="lights-go-text" id="lights-go">GO!</div>
+</div>
+
+<script>
+  // 倒计时
+  const examDate = new Date('2026-06-28');
+  const today = new Date();
+  const diff = Math.ceil((examDate - today) / (1000 * 60 * 60 * 24));
+  if (diff > 0) document.getElementById('countdown').textContent = diff;
+
+  // ── 发车灯逻辑 ──
+  function startLights() {
+    const overlay = document.getElementById('lights-overlay');
+    const lights = document.querySelectorAll('.light');
+    const goText = document.getElementById('lights-go');
+
+    // 重置状态
+    lights.forEach(l => l.classList.remove('on'));
+    goText.classList.remove('show');
+    overlay.classList.add('show');
+
+    // 引擎轰鸣声（Web Audio API）
+    playEngineRoar();
+
+    // 红灯逐个亮起（每隔 600ms）
+    lights.forEach((light, i) => {
+      setTimeout(() => {
+        light.classList.add('on');
+        playBeep(880, 0.08);         // 每盏灯一声短促蜂鸣
+      }, i * 600);
+    });
+
+    // 最后一盏亮后 600ms：全灭 + GO!
+    const totalDelay = 5 * 600;
+    setTimeout(() => {
+      lights.forEach(l => l.classList.remove('on'));
+      goText.classList.add('show');
+      playStartSound();             // 发车声
+    }, totalDelay);
+
+    // 再 1200ms 后关闭弹窗
+    setTimeout(() => {
+      overlay.classList.remove('show');
+      goText.classList.remove('show');
+    }, totalDelay + 1400);
+  }
+
+  // ── 音效（Web Audio API，无需任何音频文件）──
+  let audioCtx = null;
+  function getCtx() {
+    if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    return audioCtx;
+  }
+
+  // 每盏灯的短促嘟声
+  function playBeep(freq, duration) {
+    try {
+      const ctx = getCtx();
+      const osc = ctx.createOscillator();
+      const gain = ctx.createGain();
+      osc.connect(gain);
+      gain.connect(ctx.destination);
+      osc.type = 'sine';
+      osc.frequency.value = freq;
+      gain.gain.setValueAtTime(0.25, ctx.currentTime);
+      gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + duration);
+      osc.start(ctx.currentTime);
+      osc.stop(ctx.currentTime + duration);
+    } catch(e) {}
+  }
+
+  // 引擎轰鸣：低频噪声渐强
+  function playEngineRoar() {
+    try {
+      const ctx = getCtx();
+      const bufSize = ctx.sampleRate * 0.4;
+      const buf = ctx.createBuffer(1, bufSize, ctx.sampleRate);
+      const data = buf.getChannelData(0);
+      for (let i = 0; i < bufSize; i++) data[i] = (Math.random() * 2 - 1) * 0.3;
+
+      const src = ctx.createBufferSource();
+      src.buffer = buf;
+
+      // 低通滤波：让噪声听起来像引擎而非静电
+      const filter = ctx.createBiquadFilter();
+      filter.type = 'lowpass';
+      filter.frequency.value = 180;
+
+      const gain = ctx.createGain();
+      gain.gain.setValueAtTime(0, ctx.currentTime);
+      gain.gain.linearRampToValueAtTime(0.6, ctx.currentTime + 0.3);
+      gain.gain.linearRampToValueAtTime(0, ctx.currentTime + 0.4);
+
+      src.connect(filter);
+      filter.connect(gain);
+      gain.connect(ctx.destination);
+      src.start();
+      src.stop(ctx.currentTime + 0.4);
+    } catch(e) {}
+  }
+
+  // 发车声：轰鸣 + 上扬音调
+  function playStartSound() {
+    try {
+      const ctx = getCtx();
+      const t = ctx.currentTime;
+
+      // 低频引擎爆发
+      const noise = ctx.createOscillator();
+      const noiseGain = ctx.createGain();
+      noise.type = 'sawtooth';
+      noise.frequency.setValueAtTime(80, t);
+      noise.frequency.linearRampToValueAtTime(200, t + 0.6);
+      noiseGain.gain.setValueAtTime(0.3, t);
+      noiseGain.gain.linearRampToValueAtTime(0, t + 0.8);
+      noise.connect(noiseGain);
+      noiseGain.connect(ctx.destination);
+      noise.start(t);
+      noise.stop(t + 0.8);
+
+      // GO! 音效：上扬的清脆音
+      const osc = ctx.createOscillator();
+      const gain = ctx.createGain();
+      osc.type = 'triangle';
+      osc.frequency.setValueAtTime(440, t);
+      osc.frequency.linearRampToValueAtTime(880, t + 0.15);
+      gain.gain.setValueAtTime(0.4, t);
+      gain.gain.exponentialRampToValueAtTime(0.001, t + 0.3);
+      osc.connect(gain);
+      gain.connect(ctx.destination);
+      osc.start(t);
+      osc.stop(t + 0.3);
+    } catch(e) {}
+  }
+</script>
+
+</body>
+</html>
