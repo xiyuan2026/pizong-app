@@ -558,8 +558,10 @@
   // 倒计时
   const examDate = new Date('2026-06-28');
   const today = new Date();
-  const diff = Math.ceil((examDate - today) / (1000 * 60 * 60 * 24));
-  if (diff > 0) document.getElementById('countdown').textContent = diff;
+  today.setHours(0, 0, 0, 0);
+  examDate.setHours(0, 0, 0, 0);
+  const diff = Math.round((examDate - today) / (1000 * 60 * 60 * 24));
+  if (diff >= 0) document.getElementById('countdown').textContent = diff;
 
   // ── 发车灯逻辑 ──
   function startLights() {
