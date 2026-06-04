@@ -735,6 +735,12 @@ function showReport(hasUpload) {
         // 根据答案计算各模块分数
         const scores = calcScores();
 
+        // 存储诊断结果供首页读取
+        localStorage.setItem('pizong_diagnosis', JSON.stringify({
+          scores,
+          date: new Date().toLocaleDateString('zh-CN')
+        }));
+
         // 更新报告UI
         setTimeout(() => {
           setBar('yuji', scores.yuji);

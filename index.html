@@ -439,9 +439,9 @@
         </div>
         <div class="progress-row">
           <div class="progress-bar">
-            <div class="progress-fill" style="width:45%"></div>
+            <div class="progress-fill" id="fill-yuji" style="width:45%"></div>
           </div>
-          <span class="progress-pct">45%</span>
+          <span class="progress-pct" id="pct-yuji">45%</span>
         </div>
       </div>
 
@@ -455,9 +455,9 @@
         </div>
         <div class="progress-row">
           <div class="progress-bar">
-            <div class="progress-fill warn" style="width:30%"></div>
+            <div class="progress-fill warn" id="fill-guwen" style="width:30%"></div>
           </div>
-          <span class="progress-pct">30%</span>
+          <span class="progress-pct" id="pct-guwen">30%</span>
         </div>
       </div>
 
@@ -471,9 +471,9 @@
         </div>
         <div class="progress-row">
           <div class="progress-bar">
-            <div class="progress-fill ok" style="width:70%"></div>
+            <div class="progress-fill ok" id="fill-yudu" style="width:70%"></div>
           </div>
-          <span class="progress-pct">70%</span>
+          <span class="progress-pct" id="pct-yudu">70%</span>
         </div>
       </div>
 
@@ -487,9 +487,9 @@
         </div>
         <div class="progress-row">
           <div class="progress-bar">
-            <div class="progress-fill warn" style="width:25%"></div>
+            <div class="progress-fill warn" id="fill-zuowen" style="width:25%"></div>
           </div>
-          <span class="progress-pct">25%</span>
+          <span class="progress-pct" id="pct-zuowen">25%</span>
         </div>
       </div>
 
@@ -555,6 +555,37 @@
 </div>
 
 <script>
+  // ── 诊断结果→模块进度条 ──
+  (function loadDiagnosis() {
+    const raw = localStorage.getItem('pizong_diagnosis');
+    if (!raw) return;
+    const { scores, date } = JSON.parse(raw);
+
+    const map = [
+      { key: 'yuji',   fillId: 'fill-yuji',   pctId: 'pct-yuji' },
+      { key: 'guwen',  fillId: 'fill-guwen',  pctId: 'pct-guwen' },
+      { key: 'yudu',   fillId: 'fill-yudu',   pctId: 'pct-yudu' },
+      { key: 'zuowen', fillId: 'fill-zuowen', pctId: 'pct-zuowen' },
+    ];
+
+    map.forEach(({ key, fillId, pctId }) => {
+      const pct = scores[key] ?? null;
+      if (pct === null) return;
+      const fill = document.getElementById(fillId);
+      const label = document.getElementById(pctId);
+      if (!fill || !label) return;
+      fill.style.width = pct + '%';
+      fill.className = 'progress-fill' + (pct >= 70 ? ' ok' : pct >= 50 ? ' warn' : '');
+      label.textContent = pct + '%';
+    });
+
+    // 在"车辆系统状态"标题旁显示诊断日期
+    const titleEl = document.querySelector('.section-title');
+    if (titleEl && date) {
+      titleEl.innerHTML = `车辆系统状态 <span style="font-size:10px;color:var(--muted);font-weight:400;margin-left:6px;">诊断于 ${date}</span>`;
+    }
+  })();
+
   // 倒计时
   const examDate = new Date('2026-06-28');
   const today = new Date();
