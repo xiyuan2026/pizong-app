@@ -504,6 +504,7 @@
     <div class="tab" onclick="filterType('dictation')">📝 默写</div>
     <div class="tab" onclick="filterType('wenyan')">📜 古文</div>
     <div class="tab" onclick="filterType('reading')">🔍 阅读</div>
+    <div class="tab" onclick="filterType('mingzhu')">📚 名著</div>
     <div class="tab" onclick="filterType('xicheng')">⚡ 西城挑战</div>
   </div>
 
@@ -558,218 +559,413 @@
 // ══════════════════════════════════════════
 const ALL_QUESTIONS = [
 
-  // ── 默写 · 东城区 ──
+  // ══════════════════════════════════════════
+  // 默写题
+  // ══════════════════════════════════════════
+
+  // ── 默写 · 东城 ──
   {
-    id: 'dc_d1',
-    type: 'dictation',
-    district: 'dongcheng',
-    source: '东城 · 默写',
-    poem: '游山西村',
-    author: '陆游',
+    id: 'dc_d1', type: 'dictation', district: 'dongcheng', source: '东城 · 默写',
+    poem: '游山西村', author: '陆游',
     stem: '箫鼓追随春社近，',
     answer: '衣冠简朴古风存',
-    hint: '描写春社节日，下句写村民服饰朴素',
+    hint: '注意"箫"不要写成"萧"',
   },
   {
-    id: 'dc_d2',
-    type: 'dictation',
-    district: 'dongcheng',
-    source: '东城 · 默写',
-    poem: '陋室铭',
-    author: '刘禹锡',
+    id: 'dc_d2', type: 'dictation', district: 'dongcheng', source: '东城 · 默写',
+    poem: '陋室铭', author: '刘禹锡',
     stem: '无丝竹之乱耳，',
     answer: '无案牍之劳形',
-    hint: '两个"无"字对仗，写陋室的清静之美',
+    hint: '"牍"是木字旁，不要错写',
   },
   {
-    id: 'dc_d3',
-    type: 'dictation',
-    district: 'dongcheng',
-    source: '东城 · 默写',
-    poem: '逢入京使',
-    author: '岑参',
+    id: 'dc_d3', type: 'dictation', district: 'dongcheng', source: '东城 · 默写',
+    poem: '逢入京使', author: '岑参',
     stem: '马上相逢无纸笔，',
     answer: '凭君传语报平安',
     hint: '边塞诗，托人捎话给家人',
   },
   {
-    id: 'dc_d4',
-    type: 'dictation',
-    district: 'dongcheng',
-    source: '东城 · 默写',
-    poem: '游山西村',
-    author: '陆游',
-    stem: '写出表达"绝境中往往蕴藏转机"哲理的诗句：',
+    id: 'dc_d4', type: 'dictation', district: 'dongcheng', source: '东城 · 默写',
+    poem: '游山西村', author: '陆游',
+    stem: '写出表达"绝境中往往蕴藏转机"哲理的两句诗：',
     answer: '山重水复疑无路，柳暗花明又一村',
-    hint: '这是《游山西村》中最著名的两句',
+    hint: '《游山西村》中最著名的两句',
   },
 
-  // ── 默写 · 西城区 ──
+  // ── 默写 · 西城 ──
   {
-    id: 'xc_d1',
-    type: 'dictation',
-    district: 'xicheng',
-    source: '西城 · 默写',
-    poem: '泊秦淮',
-    author: '杜牧',
-    stem: '____________，隔江犹唱后庭花。',
+    id: 'xc_d1', type: 'dictation', district: 'xicheng', source: '西城 · 默写',
+    poem: '泊秦淮', author: '杜牧',
+    stem: '________，隔江犹唱后庭花。',
     answer: '商女不知亡国恨',
-    hint: '批判歌女不懂亡国之痛，实为讽刺当权者',
+    hint: '讽刺当权者不以亡国为鉴',
   },
   {
-    id: 'xc_d2',
-    type: 'dictation',
-    district: 'xicheng',
-    source: '西城 · 默写',
-    poem: '己亥杂诗',
-    author: '龚自珍',
-    stem: '写出《己亥杂诗》中以"落花"自比、表达奉献精神的两句：',
+    id: 'xc_d2', type: 'dictation', district: 'xicheng', source: '西城 · 默写',
+    poem: '己亥杂诗', author: '龚自珍',
+    stem: '以"落花"自比、表达奉献精神的两句：',
     answer: '落红不是无情物，化作春泥更护花',
-    hint: '落花化为春泥，寄托了诗人对下一代的期望',
+    hint: '落花化为春泥，寄托诗人对下一代的期望',
   },
   {
-    id: 'xc_d3',
-    type: 'dictation',
-    district: 'xicheng',
-    source: '西城 · 默写',
-    poem: '爱莲说',
-    author: '周敦颐',
-    stem: '《爱莲说》中描写莲花茎干正直、不横生旁枝的句子：',
+    id: 'xc_d3', type: 'dictation', district: 'xicheng', source: '西城 · 默写',
+    poem: '爱莲说', author: '周敦颐',
+    stem: '描写莲花茎干正直、不横生旁枝的句子：',
     answer: '中通外直，不蔓不枝',
-    hint: '这四个字描写莲的形态，也象征君子的品格',
+    hint: '象征君子不攀附权贵，注意"蔓"字',
   },
 
-  // ── 古文实词 · 东城区 ──
+  // ── 默写 · 海淀 ──
   {
-    id: 'dc_w1',
-    type: 'wenyan',
-    district: 'dongcheng',
-    source: '东城 · 古文',
-    stem: '下列对《孙权劝学》中"辞"字解释，与"蒙辞以军中多务"中"辞"意思相同的是：',
-    options: ['A. 言辞华美', 'B. 推托，拒绝', 'C. 辞别，告别', 'D. 道别的话'],
-    answer: 1,
-    explanation: '"蒙辞以军中多务"中"辞"意为"推托"，吕蒙以军务繁忙为借口拒绝学习。选B。',
+    id: 'hd_d1', type: 'dictation', district: 'haidian', source: '海淀 · 默写',
+    poem: '爱莲说', author: '周敦颐',
+    stem: '香远益清，________，________。',
+    answer: '亭亭净植，可远观而不可亵玩焉',
+    hint: '注意"亵"字，不要错写',
   },
   {
-    id: 'dc_w2',
-    type: 'wenyan',
-    district: 'dongcheng',
-    source: '东城 · 古文',
+    id: 'hd_d2', type: 'dictation', district: 'haidian', source: '海淀 · 默写',
+    poem: '泊秦淮', author: '杜牧',
+    stem: '烟笼寒水月笼沙，',
+    answer: '夜泊秦淮近酒家',
+    hint: '首句写景，两个"笼"字营造朦胧意境',
+  },
+  {
+    id: 'hd_d3', type: 'dictation', district: 'haidian', source: '海淀 · 默写',
+    poem: '游山西村', author: '陆游',
+    stem: '莫笑农家腊酒浑，',
+    answer: '丰年留客足鸡豚',
+    hint: '"豚"指猪，写农家待客的丰盛',
+  },
+
+  // ── 默写 · 朝阳 ──
+  {
+    id: 'cy_d1', type: 'dictation', district: 'chaoyang', source: '朝阳 · 默写',
+    poem: '木兰诗', author: '北朝民歌',
+    stem: '________，寒光照铁衣。',
+    answer: '朔气传金柝',
+    hint: '"柝"是木字旁，不要写成"析"',
+  },
+  {
+    id: 'cy_d2', type: 'dictation', district: 'chaoyang', source: '朝阳 · 默写',
+    poem: '陋室铭', author: '刘禹锡',
+    stem: '无丝竹之乱耳，________。',
+    answer: '无案牍之劳形',
+    hint: '"牍"是木字旁',
+  },
+  {
+    id: 'cy_d3', type: 'dictation', district: 'chaoyang', source: '朝阳 · 默写',
+    poem: '登幽州台歌', author: '陈子昂',
+    stem: '念天地之悠悠，________！',
+    answer: '独怆然而涕下',
+    hint: '注意"怆"字，孤独悲愤之情',
+  },
+  {
+    id: 'cy_d4', type: 'dictation', district: 'chaoyang', source: '朝阳 · 默写',
+    poem: '望岳', author: '杜甫',
+    stem: '体现"壮志凌云"的名句（《望岳》）：',
+    answer: '会当凌绝顶，一览众山小',
+    hint: '望岳尾联，蕴含不畏困难、勇攀高峰的豪情',
+  },
+  {
+    id: 'cy_d5', type: 'dictation', district: 'chaoyang', source: '朝阳 · 默写',
+    poem: '己亥杂诗', author: '龚自珍',
+    stem: '________，化作春泥更护花。',
+    answer: '落红不是无情物',
+    hint: '以落花自比，表达无私奉献精神',
+  },
+  {
+    id: 'cy_d6', type: 'dictation', district: 'chaoyang', source: '朝阳 · 默写',
+    poem: '木兰诗', author: '北朝民歌',
+    stem: '写木兰奔赴万里战场的两句：',
+    answer: '万里赴戎机，关山度若飞',
+    hint: '写木兰的英勇与豪迈，注意"戎"字',
+  },
+
+  // ══════════════════════════════════════════
+  // 古文题
+  // ══════════════════════════════════════════
+
+  // ── 古文 · 东城 ──
+  {
+    id: 'dc_w1', type: 'wenyan', district: 'dongcheng', source: '东城 · 古文',
+    stem: '与"蒙辞以军中多务"中"辞"意思相同的是：',
+    options: ['言辞华美', '推托，拒绝', '辞别，告别', '道别的话'],
+    answer: 1,
+    explanation: '"辞"意为"推托"，吕蒙以军务繁忙为借口拒绝学习。',
+  },
+  {
+    id: 'dc_w2', type: 'wenyan', district: 'dongcheng', source: '东城 · 古文',
     stem: '下列对《木兰诗》理解有误的一项是：',
     options: [
-      'A. "东市买骏马……北市买长鞭"用铺陈排比写出征前准备的紧张',
-      'B. "开我东阁门……对镜帖花黄"一连串动作，写木兰归家的喜悦',
-      'C. "雄兔脚扑朔，雌兔眼迷离"用比喻说明木兰未被发现的原因',
-      'D. 诗中用"我"指称木兰，流露出她对自身才能的强烈优越感',
+      '"东市买骏马……北市买长鞭"用铺陈排比写出征前准备的紧张',
+      '"开我东阁门……对镜帖花黄"一连串动作，写木兰归家的喜悦',
+      '"雄兔脚扑朔，雌兔眼迷离"用比喻说明木兰未被发现的原因',
+      '诗中用"我"指称木兰，流露出她对自身才能的强烈优越感',
     ],
     answer: 3,
-    explanation: 'D项有误。诗末借"雄兔""雌兔"作比，目的是说明女扮男装未被识破的原因，并非表达优越感。',
+    explanation: 'D项有误。末尾以雌雄兔作比，目的是说明女扮男装未被识破的原因，并非流露优越感。',
+  },
+  {
+    id: 'dc_w3', type: 'wenyan', district: 'dongcheng', source: '东城 · 古文',
+    stem: '《孙权劝学》中"自以为大有所益"的"大"，意思是：',
+    options: ['大的，宏大的', '很，非常', '大官，重臣', '大事，重要'],
+    answer: 1,
+    explanation: '"大"在此作副词，意为"很、非常"，表示程度深。',
+  },
+  {
+    id: 'dc_w4', type: 'wenyan', district: 'dongcheng', source: '东城 · 古文',
+    stem: '《孙权劝学》中"及鲁肃过寻阳"，"及"的意思是：',
+    options: ['以及，和', '等到', '赶上，赶及', '及格，达到'],
+    answer: 1,
+    explanation: '"及"在文言文中常见义为"等到"，表时间节点。',
   },
 
-  // ── 古文实词 · 西城区 ──
+  // ── 古文 · 西城 ──
   {
-    id: 'xc_w1',
-    type: 'wenyan',
-    district: 'xicheng',
-    source: '西城 · 古文',
-    stem: '《活板》中"瞬息可就"的"就"，与下列哪个词语中"就"意思相同？',
-    options: ['A. 就地取材', 'B. 一挥而就（完成）', 'C. 就职典礼', 'D. 半途而废'],
+    id: 'xc_w1', type: 'wenyan', district: 'xicheng', source: '西城 · 古文',
+    stem: '《活板》"瞬息可就"的"就"，与下列哪个词中"就"意思相同？',
+    options: ['就地取材', '一挥而就', '就职典礼', '避重就轻'],
     answer: 1,
-    explanation: '"瞬息可就"意为"一瞬间就完成了"，"就"意为"完成"。"一挥而就"的"就"同义，选B。',
+    explanation: '"瞬息可就"中"就"意为"完成"，"一挥而就"同义。',
   },
   {
-    id: 'xc_w2',
-    type: 'wenyan',
-    district: 'xicheng',
-    source: '西城 · 古文',
-    stem: '《望岳》中"造化钟神秀，阴阳割昏晓"，"割"字写出泰山什么特点？',
+    id: 'xc_w2', type: 'wenyan', district: 'xicheng', source: '西城 · 古文',
+    stem: '《望岳》"阴阳割昏晓"，"割"字写出泰山什么特点？',
     options: [
-      'A. 泰山山坡陡峭、危险难攀',
-      'B. 泰山巍峨高大，山南山北判若昏晓',
-      'C. 泰山历史悠久、文化深厚',
-      'D. 泰山横跨齐鲁，连绵不断',
+      '泰山山坡陡峭、危险难攀',
+      '泰山巍峨高大，山南山北判若昏晓',
+      '泰山历史悠久、文化深厚',
+      '泰山横跨齐鲁，连绵不断',
     ],
     answer: 1,
-    explanation: '"割"字化静为动，仿佛泰山用一把刀将天地切开，突出其高大雄伟——山南阳光明媚，山北阴暗如暮，答案B。',
+    explanation: '"割"字化静为动，仿佛大山是刀，将山南山北截成明暗两半，突出泰山高峻。',
   },
   {
-    id: 'xc_w3',
-    type: 'wenyan',
-    district: 'xicheng',
-    source: '西城 · 古文',
-    stem: '对《活板》中"神速"的理解，正确的是：',
+    id: 'xc_w3', type: 'wenyan', district: 'xicheng', source: '西城 · 古文',
+    stem: '对《活板》中"神速"理解正确的是：',
     options: [
-      'A. 体现活字印刷效率高，展示古代劳动人民智慧',
-      'B. 说明毕昇一人独立完成了整个印刷过程',
-      'C. 强调活字印刷术已被全国广泛普及',
-      'D. 指活字排版与雕版刻字速度完全一样',
+      '体现活字印刷效率高，展示古代劳动人民智慧',
+      '说明毕昇一人独立完成了整个印刷过程',
+      '强调活字印刷术已被全国广泛普及',
+      '指活字排版与雕版刻字速度完全一样',
     ],
     answer: 0,
-    explanation: '"神速"体现活字印刷远超雕版的效率，正确答案A。',
+    explanation: '"神速"体现活字印刷远超雕版的效率，同时彰显古代劳动人民的智慧。',
   },
 
-  // ── 阅读选择 · 东城区 ──
+  // ── 古文 · 海淀 ──
   {
-    id: 'dc_r1',
-    type: 'reading',
-    district: 'dongcheng',
-    source: '东城 · 阅读',
-    stem: '材料说明"竹"意象，甲材料侧重：',
+    id: 'hd_w1', type: 'wenyan', district: 'haidian', source: '海淀 · 古文',
+    stem: '下列选项中加点字的意思都相同的一项是（《活板》）：',
     options: [
-      'A. 介绍"竹"意象的文化意蕴发展历程',
-      'B. 表现"竹"营造宁静写意氛围的作用',
-      'C. 象征红军坚贞不屈的革命精神',
-      'D. 分析"竹"在不同诗人笔下的差异',
+      '皆为板本 / 舍己为人 / 为富不仁（为）',
+      '薄如钱唇 / 厚此薄彼 / 义薄云天（薄）',
+      '火烧令坚 / 令人捧腹 / 军令如山（令）',
+      '瞬息可就 / 一挥而就 / 功成名就（就）',
+    ],
+    answer: 3,
+    explanation: 'A、B、C三组各有词义不同的情况；D组三个"就"均为"完成"之意，全部相同。',
+  },
+  {
+    id: 'hd_w2', type: 'wenyan', district: 'haidian', source: '海淀 · 古文',
+    stem: '下列对《活板》内容理解不正确的一项是：',
+    options: [
+      '活字以"每韵为一帖"贮藏，是为了印刷时选字快捷',
+      '"昇死，其印为予群从所得"证明技术已经被推广',
+      '宋辽金时期用金属版印刷出来的纸钞和广告十分精美',
+      '中国印刷技术向世界多地传播，影响了人类文明进程',
+    ],
+    answer: 1,
+    explanation: 'B项有误。"其印为予群从所得"只说明活字被沈括的堂兄弟收藏，并不能证明技术已被推广。',
+  },
+
+  // ── 古文 · 朝阳 ──
+  {
+    id: 'cy_w1', type: 'wenyan', district: 'chaoyang', source: '朝阳 · 古文',
+    stem: '《卖油翁》下列加点字意思相同的一项是：',
+    options: [
+      '尝射于家圃（尝）/ 卧薪尝胆（尝）',
+      '释担而立（释）/ 手不释卷（释）',
+      '以钱覆其口（覆）/ 天翻地覆（覆）',
+      '自钱孔入（自）/ 自强不息（自）',
+    ],
+    answer: 1,
+    explanation: 'B两个"释"均为"放下"。A：曾经/品尝；C：覆盖/翻转；D：从/自己。',
+  },
+  {
+    id: 'cy_w2', type: 'wenyan', district: 'chaoyang', source: '朝阳 · 古文',
+    stem: '《卖油翁》对人物神态心理揣摩，理解不正确的一项是：',
+    options: [
+      '"公亦以此自矜"体现陈尧咨对自己善射的自负',
+      '"睨之"和"微颔"体现出卖油翁对陈尧咨的轻蔑',
+      '陈尧咨对卖油翁称呼从"汝"到"尔"，愤怒逐渐升级',
+      '陈尧咨"笑而遣之"，这"笑"中有会意，也有解嘲',
+    ],
+    answer: 1,
+    explanation: 'B项有误。"微颔之"是微微点头，表示认可射技，而非轻蔑；轻蔑在于"睨之"（斜眼看），整体是认可。',
+  },
+  {
+    id: 'cy_w3', type: 'wenyan', district: 'chaoyang', source: '朝阳 · 古文',
+    stem: '下列对《游山西村》理解有误的一项是：',
+    options: [
+      '"莫笑农家腊酒浑"中"莫笑"表现出诗人对农家热情好客的赞赏',
+      '"山重水复疑无路，柳暗花明又一村"既写景又富含哲理',
+      '"箫鼓追随春社近"写农家社日活动热闹，表现诗人对田园生活的向往',
+      '尾联"无时"之约说明诗人要长期定居山村，不再回朝为官',
+    ],
+    answer: 3,
+    explanation: 'D项有误。"无时"意为"随时"，表达诗人对农村的依恋，并非真的表示不再为官。',
+  },
+
+  // ══════════════════════════════════════════
+  // 阅读题
+  // ══════════════════════════════════════════
+
+  {
+    id: 'dc_r1', type: 'reading', district: 'dongcheng', source: '东城 · 阅读',
+    stem: '甲材料介绍"竹"意象，其侧重点是：',
+    options: [
+      '介绍"竹"意象的文化意蕴发展历程',
+      '表现"竹"营造宁静写意氛围的作用',
+      '象征红军坚贞不屈的革命精神',
+      '分析"竹"在不同诗人笔下的差异',
     ],
     answer: 0,
     explanation: '甲材料梳理"竹"意象从先秦至清代的文化意蕴演变，侧重发展历程，选A。',
   },
   {
-    id: 'dc_r2',
-    type: 'reading',
-    district: 'dongcheng',
-    source: '东城 · 阅读',
-    stem: '文章《此生无愧"中国心"》写吴大观"中国心"的含义，下列理解最全面的是：',
+    id: 'dc_r2', type: 'reading', district: 'dongcheng', source: '东城 · 阅读',
+    stem: '《此生无愧"中国心"》写吴大观"中国心"的含义，理解最全面的是：',
     options: [
-      'A. 指中国人自主研制的航空发动机',
-      'B. 仅指吴大观对祖国的思念之情',
-      'C. 既指航空发动机，更象征爱国心与奉献精神',
-      'D. 指他在中国工作了一辈子的忠诚',
+      '指中国人自主研制的航空发动机',
+      '仅指吴大观对祖国的思念之情',
+      '既指航空发动机，更象征爱国心与奉献精神',
+      '指他在中国工作了一辈子的忠诚',
     ],
     answer: 2,
-    explanation: '"中国心"一词双关：字面指中国自主研制的航空发动机，深层象征爱国热情与无私奉献精神，选C最全面。',
+    explanation: '"中国心"双关：字面指航空发动机，深层象征爱国热情与无私奉献精神，C最全面。',
   },
-
-  // ── 阅读选择 · 西城区 ──
   {
-    id: 'xc_r1',
-    type: 'reading',
-    district: 'xicheng',
-    source: '西城 · 阅读',
+    id: 'xc_r1', type: 'reading', district: 'xicheng', source: '西城 · 阅读',
     stem: '《紫藤花开》中"细枝缠绕、五藤相攀"的象征含义，理解正确的是：',
     options: [
-      'A. 紫藤长势旺盛，生命力顽强',
-      'B. "细枝缠绕"象征刘先生祖辈兄弟团结，"五藤相攀"象征"我"家兄妹血脉相连',
-      'C. 两者都象征自然界植物的相互依存',
-      'D. "五藤"象征五个民族共同繁荣',
+      '紫藤长势旺盛，生命力顽强',
+      '"细枝缠绕"象征刘先生祖辈兄弟团结，"五藤相攀"象征"我"家兄妹血脉相连',
+      '两者都象征自然界植物的相互依存',
+      '"五藤"象征五个民族共同繁荣',
     ],
     answer: 1,
-    explanation: '文中"细枝缠绕"对应刘先生爷爷兄弟四人团结面对困难；"五藤相攀"对应"我"家兄妹同根相连，选B。',
+    explanation: '"细枝缠绕"对应刘先生爷爷兄弟四人团结；"五藤相攀"对应"我"家兄妹同根相连，选B。',
   },
   {
-    id: 'xc_r2',
-    type: 'reading',
-    district: 'xicheng',
-    source: '西城 · 阅读',
-    stem: '《为大型建筑撑起钢铁架构》中，对文意理解不正确的一项是：',
+    id: 'xc_r2', type: 'reading', district: 'xicheng', source: '西城 · 阅读',
+    stem: '《为大型建筑撑起钢铁架构》中，对文意理解不正确的是：',
     options: [
-      'A. 沈世钊将国家需求作为自己奋斗的目标',
-      'B. 沈世钊独立完成了鸟巢和天眼项目的全部设计',
-      'C. 沈世钊重视育人，学生称他"父辈领着孩子"',
-      'D. 沈世钊甘为人梯，体现了无私奉献的精神',
+      '沈世钊将国家需求作为自己奋斗的目标',
+      '沈世钊独立完成了鸟巢和天眼项目的全部设计',
+      '沈世钊重视育人，学生称他"父辈领着孩子"',
+      '沈世钊甘为人梯，体现了无私奉献的精神',
     ],
     answer: 1,
-    explanation: 'B项有误。沈世钊是"参与"而非"独立完成"鸟巢和天眼项目，文章并未说他独立完成，选B。',
+    explanation: 'B项有误。沈世钊是"参与"而非"独立完成"鸟巢和天眼项目。',
+  },
+
+  // ══════════════════════════════════════════
+  // 名著题
+  // ══════════════════════════════════════════
+
+  {
+    id: 'mz_1', type: 'mingzhu', district: 'dongcheng', source: '东城 · 名著',
+    stem: '《骆驼祥子》中，祥子第一次买车后发生了什么？',
+    options: [
+      '被虎妞骗走了钱',
+      '被大兵抢走了车，并带走了骆驼',
+      '在雨夜意外摔车，车报废了',
+      '把车卖给了车厂主刘四爷',
+    ],
+    answer: 1,
+    explanation: '祥子第一次买车后被军阀士兵连人带车抓走，逃跑时顺手牵走了三匹骆驼，"骆驼祥子"绰号由此而来。',
+  },
+  {
+    id: 'mz_2', type: 'mingzhu', district: 'xicheng', source: '西城 · 名著',
+    stem: '《骆驼祥子》中，导致祥子最终堕落的直接打击是：',
+    options: [
+      '三次买车三次失败',
+      '虎妞难产去世，祥子卖车葬她',
+      '小福子被卖入妓院后自杀，祥子彻底绝望',
+      '刘四爷不认虎妞，赶走了祥子',
+    ],
+    answer: 2,
+    explanation: '小福子是祥子最后的精神寄托，她自杀后，祥子彻底失去活下去的希望，开始堕落。',
+  },
+  {
+    id: 'mz_3', type: 'mingzhu', district: 'haidian', source: '海淀 · 名著',
+    stem: '《钢铁是怎样炼成的》中，书名"钢铁"象征的是：',
+    options: [
+      '苏联强大的工业实力',
+      '保尔·柯察金钢铁般的革命意志',
+      '战争中使用的武器装备',
+      '铁路建设工程的艰辛',
+    ],
+    answer: 1,
+    explanation: '"钢铁"是象征，指主人公保尔在革命烈火中锻炼出的钢铁般的意志和品格。',
+  },
+  {
+    id: 'mz_4', type: 'mingzhu', district: 'chaoyang', source: '朝阳 · 名著',
+    stem: '《钢铁是怎样炼成的》中，保尔全身瘫痪、双目失明后，他选择了：',
+    options: [
+      '放弃革命，回到家乡养病',
+      '靠战友接济，度过余生',
+      '以文学创作继续为革命奋斗，完成小说',
+      '申请回到前线，继续战斗',
+    ],
+    answer: 2,
+    explanation: '保尔身残之后，靠坚定的信念以笔为武器，克服重重困难完成了小说《暴风雨所诞生的》。',
+  },
+  {
+    id: 'mz_5', type: 'mingzhu', district: 'dongcheng', source: '东城 · 名著',
+    stem: '《骆驼祥子》中，虎妞对祥子的影响，理解正确的是：',
+    options: [
+      '虎妞帮助祥子实现了买车梦，是他的贵人',
+      '虎妞用欺骗手段迫使祥子与她结婚，加速了祥子的堕落',
+      '虎妞去世后，祥子重新振作，努力拉车',
+      '虎妞是祥子最终走向光明的引路人',
+    ],
+    answer: 1,
+    explanation: '虎妞以"怀孕"谎言逼祥子结婚，用积蓄买车让祥子短暂圆梦，但虎妞难产死后祥子卖车葬她，一切归零，加速了他的堕落。',
+  },
+  {
+    id: 'mz_6', type: 'mingzhu', district: 'xicheng', source: '西城 · 名著',
+    stem: '《朝花夕拾》中，鲁迅借"长妈妈"这一人物，主要表达了：',
+    options: [
+      '对封建礼教束缚女性的强烈批判',
+      '对普通劳动妇女的善良、质朴的怀念与感激',
+      '对童年生活无聊乏味的感叹',
+      '对旧中国教育制度的讽刺',
+    ],
+    answer: 1,
+    explanation: '长妈妈是鲁迅童年的保姆，虽有迷信习俗，却真心爱护鲁迅，为他买来《山海经》，寄托了鲁迅的深切怀念。',
+  },
+  {
+    id: 'mz_7', type: 'mingzhu', district: 'haidian', source: '海淀 · 名著',
+    stem: '下列关于《西游记》的说法，正确的是：',
+    options: [
+      '孙悟空的武器是一根可大可小的金箍棒，重一万三千五百斤',
+      '唐僧取经路上共经历了九九八十一难，全靠孙悟空一人解决',
+      '猪八戒原是天宫的天蓬元帅，因调戏嫦娥被贬下凡',
+      '沙僧原是玉皇大帝身边的侍卫，因失手打碎琉璃盏被贬',
+    ],
+    answer: 2,
+    explanation: 'C正确。猪八戒前身是天蓬元帅，因调戏嫦娥被贬，投胎时错投猪胎。A：金箍棒重一万三千五百斤正确，但"一人解决"错。D：沙僧是卷帘大将。',
+  },
+  {
+    id: 'mz_8', type: 'mingzhu', district: 'chaoyang', source: '朝阳 · 名著',
+    stem: '《骆驼祥子》的作者是：',
+    options: ['鲁迅', '老舍', '巴金', '茅盾'],
+    answer: 1,
+    explanation: '《骆驼祥子》是老舍的代表作，描写了旧北京人力车夫祥子的悲剧命运。',
   },
 ];
 
@@ -798,7 +994,7 @@ function filterType(type) {
   event.target && event.target.classList.add('active');
 
   if (type === 'all') {
-    questions = shuffle([...ALL_QUESTIONS]).slice(0, 10);
+    questions = shuffle([...ALL_QUESTIONS]).slice(0, 12);
   } else if (type === 'xicheng') {
     questions = shuffle(ALL_QUESTIONS.filter(q => q.district === 'xicheng'));
   } else {
