@@ -501,20 +501,20 @@
     <div class="points-card">
       <div class="points-left">
         <div class="points-label">Season Points</div>
-        <div class="points-number">180</div>
+        <div class="points-number" id="totalXP">0</div>
         <div class="points-bar-wrap">
           <div class="points-bar-track">
-            <div class="points-bar-fill"></div>
+            <div class="points-bar-fill" id="xpBarFill" style="width:0%"></div>
           </div>
           <div class="points-bar-label">
             <span>0</span>
-            <span>下一里程碑 500pts</span>
+            <span id="xpMilestoneLabel">下一里程碑 500pts</span>
           </div>
         </div>
       </div>
       <div class="points-right">
-        <div class="points-delta">↑ +10 今日</div>
-        <div class="points-streak">🔥 连续 3 天</div>
+        <div class="points-delta" id="todayXP">↑ +0 今日</div>
+        <div class="points-streak" id="streakLabel">🔥 连续 0 天</div>
       </div>
     </div>
   </div>
@@ -555,6 +555,44 @@
 </div>
 
 <script>
+  // ── 积分动态化 ──
+  (function loadXP() {
+    const xpData = JSON.parse(localStorage.getItem('pizong_xp') || '{}');
+
+    // 总积分
+    const total = Object.values(xpData).reduce((s, v) => s + v, 0);
+
+    // 今日积分
+    const d = new Date();
+    const todayKey = `${d.getFullYear()}-${d.getMonth()+1}-${d.getDate()}`;
+    const todayVal = xpData[todayKey] || 0;
+
+    // 连续天数：从今天往前数连续有记录的天数
+    let streak = 0;
+    const check = new Date();
+    while (true) {
+      const k = `${check.getFullYear()}-${check.getMonth()+1}-${check.getDate()}`;
+      if (xpData[k] && xpData[k] > 0) {
+        streak++;
+        check.setDate(check.getDate() - 1);
+      } else {
+        break;
+      }
+    }
+
+    // 里程碑档位：500 / 1000 / 2000 / 5000
+    const milestones = [500, 1000, 2000, 5000];
+    const nextMilestone = milestones.find(m => m > total) || (total + 500);
+    const prevMilestone = milestones.filter(m => m <= total).pop() || 0;
+    const pct = Math.min(((total - prevMilestone) / (nextMilestone - prevMilestone)) * 100, 100);
+
+    document.getElementById('totalXP').textContent = total;
+    document.getElementById('todayXP').textContent = `↑ +${todayVal} 今日`;
+    document.getElementById('streakLabel').textContent = streak > 0 ? `🔥 连续 ${streak} 天` : '快去训练吧！';
+    document.getElementById('xpBarFill').style.width = pct + '%';
+    document.getElementById('xpMilestoneLabel').textContent = `下一里程碑 ${nextMilestone}pts`;
+  })();
+
   // ── 诊断结果→模块进度条 ──
   (function loadDiagnosis() {
     const raw = localStorage.getItem('pizong_diagnosis');
