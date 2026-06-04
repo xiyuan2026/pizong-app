@@ -1,0 +1,795 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+  <title>赛道策略库 · 语文赛车手</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    :root {
+      --red: #E8002D;
+      --yellow: #F5A623;
+      --green: #00D4AA;
+      --blue: #00AAFF;
+      --purple: #AA44FF;
+      --bg: #0D0005;
+      --card: #1A0010;
+      --card2: #240018;
+      --border: rgba(232,0,45,0.15);
+      --text: #FFFFFF;
+      --muted: #AA7788;
+    }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: -apple-system, 'PingFang SC', 'Helvetica Neue', sans-serif;
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+    }
+
+    .phone {
+      width: 100%;
+      max-width: 480px;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      position: relative;
+      overflow-x: hidden;
+    }
+
+    /* ── 顶栏 ── */
+    .header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 52px 20px 12px;
+    }
+    .back-btn {
+      width: 36px; height: 36px;
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 18px;
+      cursor: pointer;
+      text-decoration: none;
+      color: var(--text);
+    }
+    .header-title {
+      text-align: center;
+    }
+    .header-title .label {
+      font-size: 11px;
+      color: var(--muted);
+      letter-spacing: 1px;
+      text-transform: uppercase;
+    }
+    .header-title .name {
+      font-size: 15px;
+      font-weight: 700;
+      margin-top: 2px;
+    }
+    .header-icon {
+      width: 36px; height: 36px;
+      background: rgba(232,0,45,0.15);
+      border: 1px solid rgba(232,0,45,0.3);
+      border-radius: 10px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 18px;
+    }
+
+    /* ── 副标题 ── */
+    .subtitle {
+      padding: 0 20px 16px;
+      font-size: 12px;
+      color: var(--muted);
+      line-height: 1.6;
+    }
+
+    /* ── 策略卡片列表 ── */
+    .strategy-list {
+      padding: 0 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      padding-bottom: 32px;
+    }
+
+    /* ── 策略卡 ── */
+    .strategy-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      overflow: hidden;
+      transition: border-color 0.2s;
+    }
+    .strategy-card.active {
+      border-color: rgba(232,0,45,0.5);
+    }
+
+    .card-header {
+      display: flex;
+      align-items: center;
+      padding: 16px 18px;
+      cursor: pointer;
+      user-select: none;
+      gap: 14px;
+    }
+
+    .card-icon {
+      width: 44px; height: 44px;
+      border-radius: 12px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 22px;
+      flex-shrink: 0;
+    }
+
+    .card-meta {
+      flex: 1;
+    }
+    .card-tag {
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      margin-bottom: 3px;
+    }
+    .card-title {
+      font-size: 15px;
+      font-weight: 700;
+      line-height: 1.3;
+    }
+    .card-desc {
+      font-size: 11px;
+      color: var(--muted);
+      margin-top: 3px;
+    }
+
+    .card-chevron {
+      font-size: 14px;
+      color: var(--muted);
+      transition: transform 0.3s;
+      flex-shrink: 0;
+    }
+    .strategy-card.active .card-chevron {
+      transform: rotate(180deg);
+    }
+
+    /* ── 展开内容 ── */
+    .card-body {
+      display: none;
+      padding: 0 18px 20px;
+      border-top: 1px solid var(--border);
+    }
+    .strategy-card.active .card-body {
+      display: block;
+    }
+
+    /* ── 步骤块 ── */
+    .step-list {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      margin-top: 16px;
+    }
+
+    .step-item {
+      display: flex;
+      gap: 12px;
+      align-items: flex-start;
+    }
+    .step-num {
+      width: 24px; height: 24px;
+      border-radius: 8px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 11px;
+      font-weight: 800;
+      flex-shrink: 0;
+      margin-top: 1px;
+    }
+    .step-content {
+      flex: 1;
+    }
+    .step-title {
+      font-size: 13px;
+      font-weight: 700;
+      line-height: 1.4;
+    }
+    .step-detail {
+      font-size: 12px;
+      color: var(--muted);
+      margin-top: 3px;
+      line-height: 1.6;
+    }
+
+    /* ── 套话模板块 ── */
+    .template-block {
+      margin-top: 14px;
+    }
+    .template-label {
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 8px;
+    }
+    .template-item {
+      background: var(--card2);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 10px 14px;
+      margin-bottom: 8px;
+    }
+    .template-item .t-label {
+      font-size: 10px;
+      font-weight: 700;
+      margin-bottom: 5px;
+    }
+    .template-item .t-text {
+      font-size: 12px;
+      color: #DDD;
+      line-height: 1.7;
+    }
+    .template-item .t-text em {
+      color: var(--yellow);
+      font-style: normal;
+      font-weight: 700;
+    }
+
+    /* ── 要点列表 ── */
+    .tip-list {
+      margin-top: 14px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+    .tip-row {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      font-size: 12px;
+      line-height: 1.6;
+    }
+    .tip-dot {
+      width: 6px; height: 6px;
+      border-radius: 50%;
+      flex-shrink: 0;
+      margin-top: 6px;
+    }
+
+    /* ── 易错字表格 ── */
+    .char-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 8px;
+      margin-top: 14px;
+    }
+    .char-item {
+      background: var(--card2);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 10px 12px;
+    }
+    .char-item .poem-name {
+      font-size: 10px;
+      color: var(--muted);
+      margin-bottom: 4px;
+    }
+    .char-item .char-line {
+      font-size: 13px;
+      font-weight: 600;
+      line-height: 1.7;
+    }
+    .char-item .char-line em {
+      color: var(--red);
+      font-style: normal;
+      font-weight: 800;
+      text-decoration: underline;
+      text-decoration-color: rgba(232,0,45,0.5);
+    }
+    .char-item .char-tip {
+      font-size: 10px;
+      color: var(--yellow);
+      margin-top: 3px;
+    }
+
+    /* ── 警告提示 ── */
+    .warn-box {
+      background: rgba(245,166,35,0.08);
+      border: 1px solid rgba(245,166,35,0.25);
+      border-radius: 10px;
+      padding: 10px 14px;
+      margin-top: 14px;
+      font-size: 12px;
+      color: var(--yellow);
+      line-height: 1.6;
+    }
+    .warn-box strong { font-weight: 800; }
+
+    /* ── 分割线 ── */
+    .divider {
+      height: 1px;
+      background: var(--border);
+      margin: 14px 0;
+    }
+
+    /* ── 底部导航 ── */
+    .bottom-nav {
+      position: fixed;
+      bottom: 0; left: 50%;
+      transform: translateX(-50%);
+      width: 100%;
+      max-width: 480px;
+      background: rgba(13,0,5,0.95);
+      backdrop-filter: blur(12px);
+      border-top: 1px solid var(--border);
+      display: flex;
+      padding: 8px 0 20px;
+    }
+    .nav-item {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 3px;
+      text-decoration: none;
+      color: var(--muted);
+      font-size: 10px;
+      padding: 4px 0;
+      transition: color 0.2s;
+    }
+    .nav-item .nav-icon { font-size: 20px; }
+    .nav-item.active { color: var(--red); }
+
+    /* 底部导航占位 */
+    .nav-spacer { height: 80px; }
+  </style>
+</head>
+<body>
+<div class="phone">
+
+  <!-- 顶栏 -->
+  <div class="header">
+    <a href="index.html" class="back-btn">←</a>
+    <div class="header-title">
+      <div class="label">RACE STRATEGY</div>
+      <div class="name">赛道策略库</div>
+    </div>
+    <div class="header-icon">🗺️</div>
+  </div>
+
+  <div class="subtitle">
+    5套核心答题框架，进赛道前先把策略背熟。<br>考场上套模板，不丢冤枉分。
+  </div>
+
+  <!-- 策略卡列表 -->
+  <div class="strategy-list">
+
+    <!-- ① 阅读理解 -->
+    <div class="strategy-card" id="card-reading">
+      <div class="card-header" onclick="toggle('card-reading')">
+        <div class="card-icon" style="background:rgba(0,170,255,0.12);">📡</div>
+        <div class="card-meta">
+          <div class="card-tag" style="color:#00AAFF;">实时策略</div>
+          <div class="card-title">阅读理解答题框架</div>
+          <div class="card-desc">手法题 · 情感题 · 词句赏析</div>
+        </div>
+        <div class="card-chevron">▼</div>
+      </div>
+      <div class="card-body">
+
+        <!-- 手法题 -->
+        <div class="template-label">📌 手法题（写了什么手法，有什么效果）</div>
+        <div class="template-item">
+          <div class="t-label" style="color:#00AAFF;">万能公式</div>
+          <div class="t-text">
+            运用了<em>【手法名称】</em>，<em>【描写/表现了什么】</em>，
+            <em>【表达了作者什么情感/突出了文章什么主题】</em>。
+          </div>
+        </div>
+
+        <div class="tip-list">
+          <div class="tip-row">
+            <div class="tip-dot" style="background:#00AAFF;"></div>
+            <div>比喻/拟人：先说"把X比作Y"或"赋予X人的动作"，再说生动形象地写出了……</div>
+          </div>
+          <div class="tip-row">
+            <div class="tip-dot" style="background:#00AAFF;"></div>
+            <div>排比：增强气势/节奏感，强调了……</div>
+          </div>
+          <div class="tip-row">
+            <div class="tip-dot" style="background:#00AAFF;"></div>
+            <div>反问：加强语气，表达作者对……的强烈情感</div>
+          </div>
+        </div>
+
+        <div class="divider"></div>
+
+        <!-- 情感题 -->
+        <div class="template-label">📌 情感题（作者/人物心情是什么）</div>
+        <div class="template-item">
+          <div class="t-label" style="color:#00D4AA;">答题步骤</div>
+          <div class="t-text">
+            ① 先定性：<em>表达了作者【情感词】之情</em><br>
+            ② 再结合原文：通过<em>【具体描写/行为/语言】</em>体现<br>
+            ③ 点主题：升华到文章中心思想
+          </div>
+        </div>
+
+        <div class="warn-box">
+          <strong>⚡ 高频情感词备用：</strong>对……的热爱/赞美/思念/敬佩/感激/感慨/忧虑/批判
+        </div>
+
+        <div class="divider"></div>
+
+        <!-- 词句赏析 -->
+        <div class="template-label">📌 词句赏析（"赏析划线句子"）</div>
+        <div class="step-list">
+          <div class="step-item">
+            <div class="step-num" style="background:rgba(0,170,255,0.2);color:#00AAFF;">1</div>
+            <div class="step-content">
+              <div class="step-title">点手法</div>
+              <div class="step-detail">判断修辞/描写方式（比喻、拟人、动作描写、心理描写…）</div>
+            </div>
+          </div>
+          <div class="step-item">
+            <div class="step-num" style="background:rgba(0,170,255,0.2);color:#00AAFF;">2</div>
+            <div class="step-content">
+              <div class="step-title">释内容</div>
+              <div class="step-detail">这句话写了什么（用自己的话转述一遍）</div>
+            </div>
+          </div>
+          <div class="step-item">
+            <div class="step-num" style="background:rgba(0,170,255,0.2);color:#00AAFF;">3</div>
+            <div class="step-content">
+              <div class="step-title">析效果</div>
+              <div class="step-detail">生动形象地表现了……，体现了作者……的情感</div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- ② 文言文 -->
+    <div class="strategy-card" id="card-wenyan">
+      <div class="card-header" onclick="toggle('card-wenyan')">
+        <div class="card-icon" style="background:rgba(0,212,170,0.12);">⚔️</div>
+        <div class="card-meta">
+          <div class="card-tag" style="color:#00D4AA;">赛道记忆</div>
+          <div class="card-title">文言文翻译四步法</div>
+          <div class="card-desc">实词虚词 · 句式调整 · 补全省略</div>
+        </div>
+        <div class="card-chevron">▼</div>
+      </div>
+      <div class="card-body">
+
+        <div class="step-list">
+          <div class="step-item">
+            <div class="step-num" style="background:rgba(0,212,170,0.2);color:#00D4AA;">1</div>
+            <div class="step-content">
+              <div class="step-title">留 — 专有名词不翻译</div>
+              <div class="step-detail">人名、地名、官职名、年号、书名原样保留。<br>
+              如：木兰、可汗、朔气、燕山</div>
+            </div>
+          </div>
+          <div class="step-item">
+            <div class="step-num" style="background:rgba(0,212,170,0.2);color:#00D4AA;">2</div>
+            <div class="step-content">
+              <div class="step-title">换 — 单音词换双音词</div>
+              <div class="step-detail">文言单字→现代双字词。<br>
+              走→行走，兵→兵器，走→逃跑（注意古今异义！）</div>
+            </div>
+          </div>
+          <div class="step-item">
+            <div class="step-num" style="background:rgba(0,212,170,0.2);color:#00D4AA;">3</div>
+            <div class="step-content">
+              <div class="step-title">调 — 调整语序</div>
+              <div class="step-detail">
+                宾语前置、状语后置要还原正常语序。<br>
+                "何陋之有" → "有什么简陋的呢"
+              </div>
+            </div>
+          </div>
+          <div class="step-item">
+            <div class="step-num" style="background:rgba(0,212,170,0.2);color:#00D4AA;">4</div>
+            <div class="step-content">
+              <div class="step-title">补 — 补出省略成分</div>
+              <div class="step-detail">
+                省略的主语/宾语要用括号补出。<br>
+                "见渔人，乃大惊" → "（桃源人）见（到）渔人，于是大为惊奇"
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="divider"></div>
+
+        <div class="template-label">⚡ 东城高频考点实词</div>
+        <div class="tip-list">
+          <div class="tip-row"><div class="tip-dot" style="background:#00D4AA;"></div>
+            <div><strong>走</strong>：逃跑（不是走路）</div></div>
+          <div class="tip-row"><div class="tip-dot" style="background:#00D4AA;"></div>
+            <div><strong>妻子</strong>：妻子和儿女（不是老婆）</div></div>
+          <div class="tip-row"><div class="tip-dot" style="background:#00D4AA;"></div>
+            <div><strong>交通</strong>：交错相通（不是交通运输）</div></div>
+          <div class="tip-row"><div class="tip-dot" style="background:#00D4AA;"></div>
+            <div><strong>鲜美</strong>：鲜嫩美丽（不是味道好）</div></div>
+          <div class="tip-row"><div class="tip-dot" style="background:#00D4AA;"></div>
+            <div><strong>惠</strong>：聪明（《愚公移山》）</div></div>
+        </div>
+
+        <div class="warn-box">
+          <strong>🔧 翻译检验：</strong>翻译完读一遍，如果不通顺，99%是漏掉了省略成分或古今异义词没识别。
+        </div>
+
+      </div>
+    </div>
+
+    <!-- ③ 作文 -->
+    <div class="strategy-card" id="card-essay">
+      <div class="card-header" onclick="toggle('card-essay')">
+        <div class="card-icon" style="background:rgba(232,0,45,0.12);">✍️</div>
+        <div class="card-meta">
+          <div class="card-tag" style="color:#E8002D;">车手自述</div>
+          <div class="card-title">作文开头结尾模板</div>
+          <div class="card-desc">凤头豹尾 · 得分开局</div>
+        </div>
+        <div class="card-chevron">▼</div>
+      </div>
+      <div class="card-body">
+
+        <div class="template-label">📌 开头模板（选一种）</div>
+
+        <div class="template-item">
+          <div class="t-label" style="color:#E8002D;">① 环境烘托式（推荐）</div>
+          <div class="t-text">
+            用一段场景描写带出主题，最后一句点题。<br><br>
+            <em>【季节/时间】，【环境细节描写1-2句】。就在那一刻，我明白了——</em><em>【主题句】</em>。
+          </div>
+        </div>
+
+        <div class="template-item">
+          <div class="t-label" style="color:#E8002D;">② 设问引入式</div>
+          <div class="t-text">
+            <em>什么是【主题词】？</em>不同的人给出了不同的答案。而我的答案，写在一个<em>【故事场景】</em>里。
+          </div>
+        </div>
+
+        <div class="template-item">
+          <div class="t-label" style="color:#E8002D;">③ 倒叙悬念式</div>
+          <div class="t-text">
+            先写结局或高潮的一幕，再用"这一切，要从……说起"转入正文。
+          </div>
+        </div>
+
+        <div class="divider"></div>
+
+        <div class="template-label">📌 结尾模板（选一种）</div>
+
+        <div class="template-item">
+          <div class="t-label" style="color:#F5A623;">① 首尾呼应式（最稳）</div>
+          <div class="t-text">
+            呼应开头的意象或场景，再升华一句话点主题。<br><br>
+            <em>那【开头出现的意象】，至今仍在我心中。它让我懂得：【主题金句】。</em>
+          </div>
+        </div>
+
+        <div class="template-item">
+          <div class="t-label" style="color:#F5A623;">② 哲理升华式</div>
+          <div class="t-text">
+            从个人经历升华到普遍道理，最后一句要有力。<br><br>
+            <em>人生如【比喻】，【道理阐述一句】。我想，这便是【主题词】的真正含义。</em>
+          </div>
+        </div>
+
+        <div class="warn-box">
+          <strong>🏁 作文得分要点：</strong>
+          开头结尾各占印象分30%。开头前3行必须出现"扣题词"，结尾倒数第2句必须有"情感升华"。字迹工整比内容深度更影响分数。
+        </div>
+
+      </div>
+    </div>
+
+    <!-- ④ 默写易错字 -->
+    <div class="strategy-card" id="card-memory">
+      <div class="card-header" onclick="toggle('card-memory')">
+        <div class="card-icon" style="background:rgba(245,166,35,0.12);">⚡</div>
+        <div class="card-meta">
+          <div class="card-tag" style="color:#F5A623;">引擎调校</div>
+          <div class="card-title">默写易错字红色预警</div>
+          <div class="card-desc">五区共同高频考点 · 丢分雷区</div>
+        </div>
+        <div class="card-chevron">▼</div>
+      </div>
+      <div class="card-body">
+
+        <div class="char-grid">
+
+          <div class="char-item">
+            <div class="poem-name">《游山西村》</div>
+            <div class="char-line">箫鼓追随春<em>社</em>近</div>
+            <div class="char-tip">社≠礼，别加示字旁</div>
+          </div>
+
+          <div class="char-item">
+            <div class="poem-name">《游山西村》</div>
+            <div class="char-line">山重水<em>复</em>疑无路</div>
+            <div class="char-tip">复≠覆，不是翻覆</div>
+          </div>
+
+          <div class="char-item">
+            <div class="poem-name">《己亥杂诗》</div>
+            <div class="char-line">化作春<em>泥</em>更护花</div>
+            <div class="char-tip">泥≠尼，土字旁</div>
+          </div>
+
+          <div class="char-item">
+            <div class="poem-name">《陋室铭》</div>
+            <div class="char-line">无案<em>牍</em>之劳形</div>
+            <div class="char-tip">牍：左边是片，不是木</div>
+          </div>
+
+          <div class="char-item">
+            <div class="poem-name">《木兰诗》</div>
+            <div class="char-line">万里赴<em>戎</em>机</div>
+            <div class="char-tip">戎：横+弋，不是戌</div>
+          </div>
+
+          <div class="char-item">
+            <div class="poem-name">《木兰诗》</div>
+            <div class="char-line">关山度若<em>飞</em></div>
+            <div class="char-tip">飞的笔顺：横折弯钩+撇+撇</div>
+          </div>
+
+          <div class="char-item">
+            <div class="poem-name">《逢入京使》</div>
+            <div class="char-line"><em>凭</em>君传语报平安</div>
+            <div class="char-tip">凭：下面是几+冫（两点水）</div>
+          </div>
+
+          <div class="char-item">
+            <div class="poem-name">《望岳》</div>
+            <div class="char-line">会当<em>凌</em>绝顶</div>
+            <div class="char-tip">凌：三点水，不是两点</div>
+          </div>
+
+          <div class="char-item">
+            <div class="poem-name">《泊秦淮》</div>
+            <div class="char-line"><em>烟</em>笼寒水月笼沙</div>
+            <div class="char-tip">烟：火字旁，不是氵</div>
+          </div>
+
+          <div class="char-item">
+            <div class="poem-name">《爱莲说》</div>
+            <div class="char-line">不<em>蔓</em>不枝</div>
+            <div class="char-tip">蔓：草字头，下面是曼</div>
+          </div>
+
+          <div class="char-item">
+            <div class="poem-name">《陋室铭》</div>
+            <div class="char-line">无丝竹之<em>乱</em>耳</div>
+            <div class="char-tip">乱：左边是舌+乙，右边刀</div>
+          </div>
+
+          <div class="char-item">
+            <div class="poem-name">《落红》</div>
+            <div class="char-line">落红不是无<em>情</em>物</div>
+            <div class="char-tip">情：竖心旁，3笔</div>
+          </div>
+
+        </div>
+
+        <div class="warn-box" style="margin-top:14px;">
+          <strong>🎯 东城区默写策略：</strong>
+          默写题一般给上句填下句，或给下句填上句。先把每句诗"出现顺序"背熟，再专攻易错字。一字之差扣一分，高频失分点就是上面这12个。
+        </div>
+
+      </div>
+    </div>
+
+    <!-- ⑤ 名著 -->
+    <div class="strategy-card" id="card-classic">
+      <div class="card-header" onclick="toggle('card-classic')">
+        <div class="card-icon" style="background:rgba(170,68,255,0.12);">📚</div>
+        <div class="card-meta">
+          <div class="card-tag" style="color:#AA44FF;">技术规则手册</div>
+          <div class="card-title">名著答题角度</div>
+          <div class="card-desc">朝花夕拾 · 西游记 · 骆驼祥子</div>
+        </div>
+        <div class="card-chevron">▼</div>
+      </div>
+      <div class="card-body">
+
+        <div class="template-label">📌 名著简答题万能框架</div>
+        <div class="template-item">
+          <div class="t-label" style="color:#AA44FF;">三角度答题法</div>
+          <div class="t-text">
+            ① <em>情节角度</em>：写出具体事件（时间+人物+事件）<br>
+            ② <em>人物角度</em>：人物性格特点是什么，从此事体现<br>
+            ③ <em>主题角度</em>：这件事揭示了什么社会问题/表达了作者什么态度
+          </div>
+        </div>
+
+        <div class="divider"></div>
+
+        <div class="template-label">📌 《朝花夕拾》核心人物</div>
+        <div class="tip-list">
+          <div class="tip-row"><div class="tip-dot" style="background:#AA44FF;"></div>
+            <div><strong>阿长（长妈妈）</strong>：粗俗善良，给鲁迅买《山海经》→体现劳动人民朴实</div></div>
+          <div class="tip-row"><div class="tip-dot" style="background:#AA44FF;"></div>
+            <div><strong>藤野先生</strong>：严谨治学，不带民族偏见→鲁迅最感激的老师</div></div>
+          <div class="tip-row"><div class="tip-dot" style="background:#AA44FF;"></div>
+            <div><strong>范爱农</strong>：正直耿介，辛亥革命后潦倒而死→批判黑暗社会</div></div>
+        </div>
+
+        <div class="divider"></div>
+
+        <div class="template-label">📌 《西游记》答题要点</div>
+        <div class="tip-list">
+          <div class="tip-row"><div class="tip-dot" style="background:#AA44FF;"></div>
+            <div>孙悟空性格：神通广大+疾恶如仇+忠心护主+有勇有谋</div></div>
+          <div class="tip-row"><div class="tip-dot" style="background:#AA44FF;"></div>
+            <div>猪八戒：好吃懒做但不失善良，插科打诨推动情节</div></div>
+          <div class="tip-row"><div class="tip-dot" style="background:#AA44FF;"></div>
+            <div>主题：取经=追求理想，妖魔=困难挫折，师徒团队=合作精神</div></div>
+        </div>
+
+        <div class="divider"></div>
+
+        <div class="template-label">📌 简答题得分句型</div>
+        <div class="template-item">
+          <div class="t-label" style="color:#AA44FF;">情节描述</div>
+          <div class="t-text">
+            在<em>【作品名称】</em>中，<em>【人物】</em>因为<em>【原因】</em>，
+            <em>【做了什么事】</em>，最终<em>【结果】</em>。
+            这体现了他<em>【性格特点】</em>的一面。
+          </div>
+        </div>
+
+        <div class="warn-box">
+          <strong>🏆 名著5分全拿秘诀：</strong>
+          写情节要具体（不能只说"他很勇敢"），必须有"事+性格+主题"三层。答2分题写3点，答3分题写4点，宁多勿少。
+        </div>
+
+      </div>
+    </div>
+
+  </div>
+
+  <div class="nav-spacer"></div>
+
+  <!-- 底部导航 -->
+  <nav class="bottom-nav">
+    <a href="index.html" class="nav-item">
+      <span class="nav-icon">🏠</span>
+      <span>主控台</span>
+    </a>
+    <a href="daily.html" class="nav-item">
+      <span class="nav-icon">🏁</span>
+      <span>每日训练</span>
+    </a>
+    <a href="strategy.html" class="nav-item active">
+      <span class="nav-icon">🗺️</span>
+      <span>赛道策略</span>
+    </a>
+    <a href="diagnosis.html" class="nav-item">
+      <span class="nav-icon">🔬</span>
+      <span>赛前诊断</span>
+    </a>
+  </nav>
+
+</div>
+
+<script>
+  function toggle(id) {
+    const card = document.getElementById(id);
+    card.classList.toggle('active');
+  }
+</script>
+</body>
+</html>
