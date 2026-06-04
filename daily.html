@@ -1056,8 +1056,24 @@ function saveDailyRecord(rate) {
 
 function saveWrongQuestion(q) {
   const wrongs = JSON.parse(localStorage.getItem('pizong_wrongs') || '[]');
-  if (!wrongs.find(w => w.id === q.id)) {
-    wrongs.push({ id: q.id, source: q.source, stem: q.stem.substring(0, 40), date: getTodayKey() });
+  const existing = wrongs.findIndex(w => w.id === q.id);
+  const entry = {
+    id: q.id,
+    type: q.type,
+    district: q.district,
+    source: q.source,
+    stem: q.stem,
+    answer: q.answer,
+    options: q.options || null,
+    hint: q.hint || '',
+    date: getTodayKey(),
+    wrongCount: existing >= 0 ? (wrongs[existing].wrongCount || 1) + 1 : 1,
+    mastered: false
+  };
+  if (existing >= 0) {
+    wrongs[existing] = entry;
+  } else {
+    wrongs.push(entry);
   }
   localStorage.setItem('pizong_wrongs', JSON.stringify(wrongs));
 }

@@ -1,0 +1,717 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+  <title>故障日志 · 语文赛车手</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    :root {
+      --red: #E8002D;
+      --yellow: #F5A623;
+      --green: #00D4AA;
+      --bg: #0D0005;
+      --card: #1A0010;
+      --card2: #240018;
+      --border: rgba(232,0,45,0.15);
+      --text: #FFFFFF;
+      --muted: #AA7788;
+    }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: -apple-system, 'PingFang SC', 'Helvetica Neue', sans-serif;
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+    }
+
+    .phone {
+      width: 100%;
+      max-width: 480px;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      position: relative;
+      overflow-x: hidden;
+    }
+
+    /* ── 顶栏 ── */
+    .header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 52px 20px 12px;
+    }
+    .back-btn {
+      width: 36px; height: 36px;
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 18px;
+      cursor: pointer;
+      text-decoration: none;
+      color: var(--text);
+    }
+    .header-title { text-align: center; }
+    .header-title .label {
+      font-size: 11px; color: var(--muted);
+      letter-spacing: 1px; text-transform: uppercase;
+    }
+    .header-title .name { font-size: 15px; font-weight: 700; margin-top: 2px; }
+    .header-icon {
+      width: 36px; height: 36px;
+      background: rgba(232,0,45,0.15);
+      border: 1px solid rgba(232,0,45,0.3);
+      border-radius: 10px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 18px;
+    }
+
+    /* ── 统计栏 ── */
+    .stats-bar {
+      margin: 4px 16px 16px;
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 14px 18px;
+      display: flex;
+      gap: 0;
+    }
+    .stat-item {
+      flex: 1;
+      text-align: center;
+    }
+    .stat-item + .stat-item {
+      border-left: 1px solid var(--border);
+    }
+    .stat-num {
+      font-size: 22px;
+      font-weight: 800;
+      line-height: 1;
+    }
+    .stat-label {
+      font-size: 10px;
+      color: var(--muted);
+      margin-top: 4px;
+      letter-spacing: 0.5px;
+    }
+
+    /* ── 筛选 Tab ── */
+    .filter-row {
+      display: flex;
+      gap: 8px;
+      padding: 0 16px 14px;
+      overflow-x: auto;
+      scrollbar-width: none;
+    }
+    .filter-row::-webkit-scrollbar { display: none; }
+    .filter-tab {
+      flex-shrink: 0;
+      padding: 6px 14px;
+      border-radius: 20px;
+      font-size: 12px;
+      font-weight: 600;
+      background: var(--card);
+      border: 1px solid var(--border);
+      color: var(--muted);
+      cursor: pointer;
+      transition: all 0.2s;
+      white-space: nowrap;
+    }
+    .filter-tab.active {
+      background: var(--red);
+      border-color: var(--red);
+      color: #fff;
+    }
+
+    /* ── 空状态 ── */
+    .empty-state {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 60px 32px;
+      text-align: center;
+      gap: 12px;
+    }
+    .empty-icon { font-size: 56px; opacity: 0.4; }
+    .empty-title { font-size: 16px; font-weight: 700; color: var(--muted); }
+    .empty-sub { font-size: 13px; color: var(--muted); opacity: 0.7; line-height: 1.6; }
+    .go-train-btn {
+      margin-top: 8px;
+      padding: 12px 28px;
+      background: var(--red);
+      border: none;
+      border-radius: 12px;
+      color: #fff;
+      font-size: 14px;
+      font-weight: 700;
+      cursor: pointer;
+      text-decoration: none;
+      display: inline-block;
+    }
+
+    /* ── 错题列表 ── */
+    .wrong-list {
+      padding: 0 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      padding-bottom: 32px;
+    }
+
+    /* ── 错题卡 ── */
+    .wrong-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      overflow: hidden;
+      transition: border-color 0.2s;
+    }
+    .wrong-card.mastered {
+      border-color: rgba(0,212,170,0.3);
+      opacity: 0.7;
+    }
+    .wrong-card.active { border-color: rgba(232,0,45,0.5); }
+
+    .wcard-header {
+      display: flex;
+      align-items: flex-start;
+      padding: 14px 16px;
+      cursor: pointer;
+      gap: 12px;
+    }
+
+    .wcard-badge {
+      padding: 3px 8px;
+      border-radius: 6px;
+      font-size: 10px;
+      font-weight: 800;
+      letter-spacing: 0.5px;
+      white-space: nowrap;
+      flex-shrink: 0;
+      margin-top: 2px;
+    }
+
+    .wcard-content { flex: 1; min-width: 0; }
+    .wcard-stem {
+      font-size: 13px;
+      font-weight: 600;
+      line-height: 1.5;
+      word-break: break-all;
+    }
+    .wcard-meta {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-top: 6px;
+    }
+    .wcard-source {
+      font-size: 10px;
+      color: var(--muted);
+    }
+    .wcard-wrong-count {
+      font-size: 10px;
+      color: var(--yellow);
+      font-weight: 700;
+    }
+    .wcard-date {
+      font-size: 10px;
+      color: var(--muted);
+      margin-left: auto;
+    }
+
+    .wcard-chevron {
+      font-size: 12px;
+      color: var(--muted);
+      transition: transform 0.3s;
+      flex-shrink: 0;
+      margin-top: 4px;
+    }
+    .wrong-card.active .wcard-chevron { transform: rotate(180deg); }
+
+    /* ── 展开练习区 ── */
+    .wcard-body {
+      display: none;
+      border-top: 1px solid var(--border);
+      padding: 16px;
+    }
+    .wrong-card.active .wcard-body { display: block; }
+
+    /* 题干完整展示 */
+    .drill-stem {
+      font-size: 14px;
+      font-weight: 600;
+      line-height: 1.7;
+      margin-bottom: 14px;
+      color: #EEE;
+    }
+
+    /* 选择题选项 */
+    .drill-options {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      margin-bottom: 14px;
+    }
+    .drill-option {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 10px 14px;
+      background: var(--card2);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      cursor: pointer;
+      transition: all 0.15s;
+      font-size: 13px;
+    }
+    .drill-option:hover { border-color: rgba(232,0,45,0.35); }
+    .drill-option.correct { border-color: var(--green); background: rgba(0,212,170,0.08); color: var(--green); }
+    .drill-option.wrong-ans { border-color: var(--red); background: rgba(232,0,45,0.08); color: var(--red); }
+    .opt-letter {
+      width: 22px; height: 22px;
+      border-radius: 6px;
+      background: rgba(255,255,255,0.06);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 11px; font-weight: 800;
+      flex-shrink: 0;
+    }
+
+    /* 默写输入 */
+    .drill-input-row {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 14px;
+    }
+    .drill-input {
+      flex: 1;
+      background: var(--card2);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 10px 14px;
+      color: var(--text);
+      font-size: 14px;
+      outline: none;
+      transition: border-color 0.2s;
+    }
+    .drill-input:focus { border-color: rgba(232,0,45,0.5); }
+    .drill-input.correct { border-color: var(--green); }
+    .drill-input.wrong-ans { border-color: var(--red); }
+    .drill-submit {
+      padding: 10px 16px;
+      background: var(--red);
+      border: none;
+      border-radius: 10px;
+      color: #fff;
+      font-size: 13px;
+      font-weight: 700;
+      cursor: pointer;
+      white-space: nowrap;
+    }
+
+    /* 反馈区 */
+    .drill-feedback {
+      display: none;
+      padding: 10px 14px;
+      border-radius: 10px;
+      font-size: 12px;
+      line-height: 1.6;
+      margin-bottom: 14px;
+    }
+    .drill-feedback.show { display: block; }
+    .drill-feedback.correct { background: rgba(0,212,170,0.08); border: 1px solid rgba(0,212,170,0.3); color: var(--green); }
+    .drill-feedback.wrong-ans { background: rgba(232,0,45,0.08); border: 1px solid rgba(232,0,45,0.3); color: #FF6688; }
+
+    /* 操作按钮行 */
+    .wcard-actions {
+      display: flex;
+      gap: 8px;
+      margin-top: 12px;
+    }
+    .action-btn {
+      flex: 1;
+      padding: 9px 0;
+      border-radius: 10px;
+      font-size: 12px;
+      font-weight: 700;
+      cursor: pointer;
+      border: none;
+      transition: opacity 0.2s;
+    }
+    .action-btn:active { opacity: 0.7; }
+    .btn-mastered {
+      background: rgba(0,212,170,0.15);
+      border: 1px solid rgba(0,212,170,0.3);
+      color: var(--green);
+    }
+    .btn-mastered.done {
+      background: rgba(0,212,170,0.25);
+    }
+    .btn-delete {
+      background: rgba(232,0,45,0.08);
+      border: 1px solid rgba(232,0,45,0.2);
+      color: var(--muted);
+    }
+
+    /* ── 清空按钮 ── */
+    .clear-row {
+      padding: 0 16px 16px;
+      display: flex;
+      justify-content: flex-end;
+    }
+    .clear-btn {
+      font-size: 11px;
+      color: var(--muted);
+      background: none;
+      border: none;
+      cursor: pointer;
+      padding: 4px 0;
+      opacity: 0.6;
+    }
+
+    /* ── 底部导航 ── */
+    .bottom-nav {
+      position: fixed;
+      bottom: 0; left: 50%;
+      transform: translateX(-50%);
+      width: 100%; max-width: 480px;
+      background: rgba(13,0,5,0.95);
+      backdrop-filter: blur(12px);
+      border-top: 1px solid var(--border);
+      display: flex;
+      padding: 8px 0 20px;
+    }
+    .nav-item {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 3px;
+      text-decoration: none;
+      color: var(--muted);
+      font-size: 10px;
+      padding: 4px 0;
+    }
+    .nav-item .nav-icon { font-size: 20px; }
+    .nav-item.active { color: var(--red); }
+
+    .nav-spacer { height: 80px; }
+  </style>
+</head>
+<body>
+<div class="phone">
+
+  <!-- 顶栏 -->
+  <div class="header">
+    <a href="index.html" class="back-btn">←</a>
+    <div class="header-title">
+      <div class="label">FAULT LOG</div>
+      <div class="name">故障日志</div>
+    </div>
+    <div class="header-icon">🔧</div>
+  </div>
+
+  <!-- 统计栏 -->
+  <div class="stats-bar" id="stats-bar">
+    <div class="stat-item">
+      <div class="stat-num" id="stat-total" style="color:#E8002D;">0</div>
+      <div class="stat-label">待修复</div>
+    </div>
+    <div class="stat-item">
+      <div class="stat-num" id="stat-mastered" style="color:#00D4AA;">0</div>
+      <div class="stat-label">已攻克</div>
+    </div>
+    <div class="stat-item">
+      <div class="stat-num" id="stat-streak" style="color:#F5A623;">0</div>
+      <div class="stat-label">高频错误</div>
+    </div>
+  </div>
+
+  <!-- 筛选 Tab -->
+  <div class="filter-row" id="filter-row">
+    <div class="filter-tab active" data-filter="all">全部</div>
+    <div class="filter-tab" data-filter="dictation">默写</div>
+    <div class="filter-tab" data-filter="classical">古文</div>
+    <div class="filter-tab" data-filter="reading">阅读</div>
+    <div class="filter-tab" data-filter="unmastered">未攻克</div>
+  </div>
+
+  <!-- 清空按钮 -->
+  <div class="clear-row">
+    <button class="clear-btn" onclick="confirmClear()">清空全部记录</button>
+  </div>
+
+  <!-- 内容区 -->
+  <div id="content-area" style="flex:1;"></div>
+
+  <div class="nav-spacer"></div>
+
+  <!-- 底部导航 -->
+  <nav class="bottom-nav">
+    <a href="index.html" class="nav-item">
+      <span class="nav-icon">🏠</span>
+      <span>主控台</span>
+    </a>
+    <a href="daily.html" class="nav-item">
+      <span class="nav-icon">🏁</span>
+      <span>每日训练</span>
+    </a>
+    <a href="strategy.html" class="nav-item">
+      <span class="nav-icon">🗺️</span>
+      <span>赛道策略</span>
+    </a>
+    <a href="diagnosis.html" class="nav-item">
+      <span class="nav-icon">🔬</span>
+      <span>赛前诊断</span>
+    </a>
+  </nav>
+
+</div>
+
+<script>
+// ── 数据 ──────────────────────────────────────────
+let allWrongs = [];
+let currentFilter = 'all';
+
+function load() {
+  allWrongs = JSON.parse(localStorage.getItem('pizong_wrongs') || '[]');
+  // 按 wrongCount 降序，高频错误排前面
+  allWrongs.sort((a, b) => (b.wrongCount || 1) - (a.wrongCount || 1));
+  updateStats();
+  render();
+}
+
+function updateStats() {
+  const total = allWrongs.filter(w => !w.mastered).length;
+  const mastered = allWrongs.filter(w => w.mastered).length;
+  const highFreq = allWrongs.filter(w => (w.wrongCount || 1) >= 2).length;
+  document.getElementById('stat-total').textContent = total;
+  document.getElementById('stat-mastered').textContent = mastered;
+  document.getElementById('stat-streak').textContent = highFreq;
+}
+
+function getFiltered() {
+  if (currentFilter === 'all') return allWrongs;
+  if (currentFilter === 'unmastered') return allWrongs.filter(w => !w.mastered);
+  return allWrongs.filter(w => w.type === currentFilter);
+}
+
+// ── 渲染 ──────────────────────────────────────────
+function render() {
+  const area = document.getElementById('content-area');
+  const list = getFiltered();
+
+  if (list.length === 0) {
+    area.innerHTML = `
+      <div class="empty-state">
+        <div class="empty-icon">✅</div>
+        <div class="empty-title">${currentFilter === 'unmastered' ? '全部攻克！' : '暂无故障记录'}</div>
+        <div class="empty-sub">${currentFilter === 'unmastered'
+          ? '错过的题都已掌握，赛车状态满格'
+          : '去每日训练答题，\n答错的题会自动记录到这里'}</div>
+        <a href="daily.html" class="go-train-btn">去练习</a>
+      </div>`;
+    return;
+  }
+
+  const html = `<div class="wrong-list">${list.map(w => cardHTML(w)).join('')}</div>`;
+  area.innerHTML = html;
+
+  // 绑定 Tab 和操作事件
+  area.querySelectorAll('.wcard-header').forEach(el => {
+    el.addEventListener('click', () => toggleCard(el.dataset.id));
+  });
+  area.querySelectorAll('.drill-option').forEach(el => {
+    el.addEventListener('click', () => selectOption(el.dataset.id, el.dataset.opt));
+  });
+  area.querySelectorAll('.drill-submit').forEach(el => {
+    el.addEventListener('click', () => submitDictation(el.dataset.id));
+  });
+  area.querySelectorAll('.drill-input').forEach(el => {
+    el.addEventListener('keydown', e => {
+      if (e.key === 'Enter') submitDictation(el.dataset.id);
+    });
+  });
+  area.querySelectorAll('.btn-mastered').forEach(el => {
+    el.addEventListener('click', e => { e.stopPropagation(); markMastered(el.dataset.id); });
+  });
+  area.querySelectorAll('.btn-delete').forEach(el => {
+    el.addEventListener('click', e => { e.stopPropagation(); deleteWrong(el.dataset.id); });
+  });
+}
+
+function typeBadge(w) {
+  const map = {
+    dictation: { label: '默写', color: '#F5A623', bg: 'rgba(245,166,35,0.12)' },
+    classical:  { label: '古文', color: '#00D4AA', bg: 'rgba(0,212,170,0.12)' },
+    reading:    { label: '阅读', color: '#00AAFF', bg: 'rgba(0,170,255,0.12)' },
+  };
+  const t = map[w.type] || { label: '其他', color: '#AA7788', bg: 'rgba(170,120,136,0.12)' };
+  return `<span class="wcard-badge" style="color:${t.color};background:${t.bg};">${t.label}</span>`;
+}
+
+function cardHTML(w) {
+  const masteredClass = w.mastered ? ' mastered' : '';
+  const wrongCountLabel = (w.wrongCount || 1) >= 2
+    ? `<span class="wcard-wrong-count">⚡ 错了${w.wrongCount}次</span>` : '';
+  const masteredLabel = w.mastered ? '✅ 已攻克' : '标记攻克';
+  const masteredBtnClass = w.mastered ? ' done' : '';
+
+  let drillHTML = '';
+  if (w.type === 'dictation') {
+    drillHTML = `
+      <div class="drill-stem">${w.stem}</div>
+      <div class="drill-input-row">
+        <input class="drill-input" id="input-${w.id}" data-id="${w.id}"
+               placeholder="输入答案，回车提交" autocomplete="off" />
+        <button class="drill-submit" data-id="${w.id}">提交</button>
+      </div>
+      <div class="drill-feedback" id="fb-${w.id}"></div>`;
+  } else if (w.options) {
+    const opts = w.options.map((opt, i) => {
+      const letter = String.fromCharCode(65 + i);
+      return `<div class="drill-option" data-id="${w.id}" data-opt="${letter}">
+        <span class="opt-letter">${letter}</span>${opt}
+      </div>`;
+    }).join('');
+    drillHTML = `
+      <div class="drill-stem">${w.stem}</div>
+      <div class="drill-options">${opts}</div>
+      <div class="drill-feedback" id="fb-${w.id}"></div>`;
+  } else {
+    drillHTML = `
+      <div class="drill-stem">${w.stem}</div>
+      <div class="drill-feedback show correct" id="fb-${w.id}">
+        ✅ 正确答案：${w.answer}${w.hint ? '<br>💡 ' + w.hint : ''}
+      </div>`;
+  }
+
+  return `
+    <div class="wrong-card${masteredClass}" id="wcard-${w.id}">
+      <div class="wcard-header" data-id="${w.id}">
+        ${typeBadge(w)}
+        <div class="wcard-content">
+          <div class="wcard-stem">${w.stem.length > 36 ? w.stem.substring(0, 36) + '…' : w.stem}</div>
+          <div class="wcard-meta">
+            <span class="wcard-source">${w.source || ''}</span>
+            ${wrongCountLabel}
+            <span class="wcard-date">${w.date || ''}</span>
+          </div>
+        </div>
+        <div class="wcard-chevron">▼</div>
+      </div>
+      <div class="wcard-body" id="body-${w.id}">
+        ${drillHTML}
+        <div class="wcard-actions">
+          <button class="action-btn btn-mastered${masteredBtnClass}" data-id="${w.id}">${masteredLabel}</button>
+          <button class="action-btn btn-delete" data-id="${w.id}">删除此条</button>
+        </div>
+      </div>
+    </div>`;
+}
+
+// ── 交互 ──────────────────────────────────────────
+function toggleCard(id) {
+  const card = document.getElementById('wcard-' + id);
+  if (!card) return;
+  card.classList.toggle('active');
+}
+
+function selectOption(id, chosen) {
+  const w = allWrongs.find(q => q.id === id);
+  if (!w) return;
+
+  const body = document.getElementById('body-' + id);
+  if (!body) return;
+
+  // 禁止重复答题
+  if (body.dataset.answered) return;
+  body.dataset.answered = '1';
+
+  const correct = w.answer;
+  body.querySelectorAll('.drill-option').forEach(el => {
+    const isCorrect = el.dataset.opt === correct;
+    const isChosen = el.dataset.opt === chosen;
+    if (isCorrect) el.classList.add('correct');
+    if (isChosen && !isCorrect) el.classList.add('wrong-ans');
+    el.style.cursor = 'default';
+  });
+
+  const fb = document.getElementById('fb-' + id);
+  if (fb) {
+    fb.className = 'drill-feedback show ' + (chosen === correct ? 'correct' : 'wrong-ans');
+    fb.innerHTML = chosen === correct
+      ? `✅ 正确！${w.hint ? '<br>💡 ' + w.hint : ''}`
+      : `❌ 正确答案是 ${correct}。${w.hint ? '<br>💡 ' + w.hint : ''}`;
+  }
+}
+
+function submitDictation(id) {
+  const w = allWrongs.find(q => q.id === id);
+  if (!w) return;
+
+  const input = document.getElementById('input-' + id);
+  if (!input || input.disabled) return;
+
+  const val = input.value.trim();
+  if (!val) return;
+
+  const correct = w.answer.replace(/[，。、？！\s]/g, '');
+  const userAns = val.replace(/[，。、？！\s]/g, '');
+  const isRight = userAns === correct;
+
+  input.disabled = true;
+  input.classList.add(isRight ? 'correct' : 'wrong-ans');
+
+  const fb = document.getElementById('fb-' + id);
+  if (fb) {
+    fb.className = 'drill-feedback show ' + (isRight ? 'correct' : 'wrong-ans');
+    fb.innerHTML = isRight
+      ? `✅ 正确！${w.hint ? '<br>💡 ' + w.hint : ''}`
+      : `❌ 正确答案：${w.answer}${w.hint ? '<br>💡 ' + w.hint : ''}`;
+  }
+}
+
+function markMastered(id) {
+  const idx = allWrongs.findIndex(w => w.id === id);
+  if (idx < 0) return;
+  allWrongs[idx].mastered = !allWrongs[idx].mastered;
+  localStorage.setItem('pizong_wrongs', JSON.stringify(allWrongs));
+  load();
+}
+
+function deleteWrong(id) {
+  allWrongs = allWrongs.filter(w => w.id !== id);
+  localStorage.setItem('pizong_wrongs', JSON.stringify(allWrongs));
+  load();
+}
+
+function confirmClear() {
+  if (allWrongs.length === 0) return;
+  if (confirm('确定清空全部故障日志？此操作不可撤销。')) {
+    localStorage.removeItem('pizong_wrongs');
+    load();
+  }
+}
+
+// ── 筛选 Tab ──────────────────────────────────────
+document.getElementById('filter-row').addEventListener('click', e => {
+  const tab = e.target.closest('.filter-tab');
+  if (!tab) return;
+  document.querySelectorAll('.filter-tab').forEach(t => t.classList.remove('active'));
+  tab.classList.add('active');
+  currentFilter = tab.dataset.filter;
+  render();
+});
+
+// ── 初始化 ────────────────────────────────────────
+load();
+</script>
+</body>
+</html>
