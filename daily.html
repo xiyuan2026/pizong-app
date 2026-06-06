@@ -172,8 +172,41 @@
       color: var(--yellow);
       border: 1px solid rgba(245, 166, 35, 0.3);
     }
-    .q-tag.xicheng::before {
-      content: "⚡ ";
+
+    .q-tag.haidian {
+      background: rgba(100, 180, 255, 0.15);
+      color: #64B4FF;
+      border: 1px solid rgba(100, 180, 255, 0.3);
+    }
+    .q-tag.chaoyang {
+      background: rgba(200, 120, 255, 0.15);
+      color: #C878FF;
+      border: 1px solid rgba(200, 120, 255, 0.3);
+    }
+    .q-tag.changping {
+      background: rgba(255, 160, 80, 0.15);
+      color: #FFA050;
+      border: 1px solid rgba(255, 160, 80, 0.3);
+    }
+    .q-tag.fengtai {
+      background: rgba(80, 200, 120, 0.15);
+      color: #50C878;
+      border: 1px solid rgba(80, 200, 120, 0.3);
+    }
+    .q-tag.tongzhou {
+      background: rgba(255, 80, 160, 0.15);
+      color: #FF50A0;
+      border: 1px solid rgba(255, 80, 160, 0.3);
+    }
+    .q-tag.shijingshan {
+      background: rgba(255, 220, 50, 0.15);
+      color: #FFDC32;
+      border: 1px solid rgba(255, 220, 50, 0.3);
+    }
+    .q-tag.shunyi {
+      background: rgba(50, 220, 220, 0.15);
+      color: #32DCDC;
+      border: 1px solid rgba(50, 220, 220, 0.3);
     }
     .q-source {
       font-size: 10px;
@@ -967,6 +1000,219 @@ const ALL_QUESTIONS = [
     answer: 1,
     explanation: '《骆驼祥子》是老舍的代表作，描写了旧北京人力车夫祥子的悲剧命运。',
   },
+
+  // ══════════════════════════════════════════
+  // 默写 · 昌平
+  // ══════════════════════════════════════════
+  {
+    id: 'cp_d1', type: 'dictation', district: 'changping', source: '昌平 · 默写',
+    poem: '登幽州台歌', author: '陈子昂',
+    stem: '念天地之悠悠，________！',
+    answer: '独怆然而涕下',
+    hint: '注意"怆"字，表达孤独悲愤',
+  },
+  {
+    id: 'cp_d2', type: 'dictation', district: 'changping', source: '昌平 · 默写',
+    poem: '爱莲说', author: '周敦颐',
+    stem: '写世人偏爱牡丹、追名逐利的两句：',
+    answer: '牡丹之爱，宜乎众矣',
+    hint: '作者以此讽刺世人追名逐利的风气',
+  },
+
+  // ══════════════════════════════════════════
+  // 默写 · 丰台
+  // ══════════════════════════════════════════
+  {
+    id: 'ft_d1', type: 'dictation', district: 'fengtai', source: '丰台 · 默写',
+    poem: '木兰诗', author: '北朝民歌',
+    stem: '________，关山度若飞。',
+    answer: '万里赴戎机',
+    hint: '"戎机"指战事、战场，注意"戎"字写法',
+  },
+  {
+    id: 'ft_d2', type: 'dictation', district: 'fengtai', source: '丰台 · 默写',
+    poem: '望岳', author: '杜甫',
+    stem: '________，阴阳割昏晓。',
+    answer: '造化钟神秀',
+    hint: '"造化"指大自然，"钟"意为聚集，写泰山集天地灵秀',
+  },
+  {
+    id: 'ft_d3', type: 'dictation', district: 'fengtai', source: '丰台 · 默写',
+    poem: '爱莲说', author: '周敦颐',
+    stem: '予独爱莲之出淤泥而不染，________。',
+    answer: '濯清涟而不妖',
+    hint: '"濯"意为洗涤，"涟"指清水，注意字形',
+  },
+
+  // ══════════════════════════════════════════
+  // 默写 · 通州
+  // ══════════════════════════════════════════
+  {
+    id: 'tz_d1', type: 'dictation', district: 'tongzhou', source: '通州 · 默写',
+    poem: '约客', author: '赵师秀',
+    stem: '有约不来过夜半，________。',
+    answer: '闲敲棋子落灯花',
+    hint: '写等待友人不来的百无聊赖，注意"灯花"是灯芯燃烧的结',
+  },
+  {
+    id: 'tz_d2', type: 'dictation', district: 'tongzhou', source: '通州 · 默写',
+    poem: '陋室铭', author: '刘禹锡',
+    stem: '________，惟吾德馨。',
+    answer: '斯是陋室',
+    hint: '"斯"指"这"，"馨"是远播的香气，比喻品德高尚',
+  },
+
+  // ══════════════════════════════════════════
+  // 默写 · 石景山
+  // ══════════════════════════════════════════
+  {
+    id: 'sjs_d1', type: 'dictation', district: 'shijingshan', source: '石景山 · 默写',
+    poem: '望岳', author: '杜甫',
+    stem: '荡胸生曾云，________。',
+    answer: '决眦入归鸟',
+    hint: '"决眦"指睁大眼睛，"曾"同"层"，写诗人望岳时的专注',
+  },
+
+  // ══════════════════════════════════════════
+  // 默写 · 顺义
+  // ══════════════════════════════════════════
+  {
+    id: 'sy_d1', type: 'dictation', district: 'shunyi', source: '顺义 · 默写',
+    poem: '春夜洛城闻笛', author: '李白',
+    stem: '此夜曲中闻折柳，________。',
+    answer: '何人不起故园情',
+    hint: '"折柳"是送别曲，闻笛思乡，注意"故园"二字',
+  },
+  {
+    id: 'sy_d2', type: 'dictation', district: 'shunyi', source: '顺义 · 默写',
+    poem: '游山西村', author: '陆游',
+    stem: '________，衣冠简朴古风存。',
+    answer: '箫鼓追随春社近',
+    hint: '"春社"是祭祀土地神的节日，注意"箫"字不要写成"萧"',
+  },
+
+  // ══════════════════════════════════════════
+  // 古文 · 昌平（《陋室铭》）
+  // ══════════════════════════════════════════
+  {
+    id: 'cp_w1', type: 'wenyan', district: 'changping', source: '昌平 · 古文',
+    stem: '《陋室铭》"谈笑有鸿儒"中"鸿"字，与下列哪个词意思相同？',
+    options: ['轻于鸿毛', '鸿鹄之志', '鸿篇巨制', '来鸿去燕'],
+    answer: 2,
+    explanation: '"谈笑有鸿儒"中"鸿"=大（鸿儒=大学者）；"鸿篇巨制"中"鸿"=大（篇幅宏大）。A鸿毛=鸿雁的毛；B鸿鹄=天鹅；D来鸿=鸿雁书信。',
+  },
+  {
+    id: 'cp_w2', type: 'wenyan', district: 'changping', source: '昌平 · 古文',
+    stem: '下列对《陋室铭》"何陋之有"理解不正确的是：',
+    options: [
+      '呼应开篇"斯是陋室，惟吾德馨"',
+      '强调"陋室不陋"的关键在于有德君子居之',
+      '鲜明表达了作者坚守精神追求的自得',
+      '表明孔子对刘禹锡高尚品德的直接肯定',
+    ],
+    answer: 3,
+    explanation: 'D有误。"孔子云：何陋之有"是刘禹锡借孔子之言为自己辩护，孔子并不认识刘禹锡，是间接引用名言，非"直接肯定"。',
+  },
+
+  // ══════════════════════════════════════════
+  // 古文 · 丰台（《卖油翁》）
+  // ══════════════════════════════════════════
+  {
+    id: 'ft_w1', type: 'wenyan', district: 'fengtai', source: '丰台 · 古文',
+    stem: '《卖油翁》"陈康肃公善射"中的"善"，与下列哪个词意思相同？',
+    options: ['乐善好施', '循循善诱', '择善而从', '多多益善'],
+    answer: 1,
+    explanation: '"善射"=擅长射箭；"循循善诱"=善于引导，两者"善"均为"擅长、善于"。A善=善良；C善=好的事；D善=多。',
+  },
+  {
+    id: 'ft_w2', type: 'wenyan', district: 'fengtai', source: '丰台 · 古文',
+    stem: '对《卖油翁》以下两句翻译和理解，全都正确的是：',
+    options: [
+      '【甲】睨之久而不去——（卖油翁）斜眼看了很久没离开。理解：卖油翁认为陈尧咨箭术有待改进。',
+      '【乙】汝亦知射乎？吾射不亦精乎？——你也懂射箭吗？我的箭术难道不精湛吗？理解：连续反问可见陈尧咨对卖油翁态度的不满。',
+      '甲乙两项均正确',
+      '甲乙两项均有误',
+    ],
+    answer: 1,
+    explanation: '乙正确。甲的"理解"有误：卖油翁久观并非认为箭术差，而是表示不以为意（"但微颔之"）；乙的翻译和理解都准确。',
+  },
+
+  // ══════════════════════════════════════════
+  // 古文 · 通州（《活板》）
+  // ══════════════════════════════════════════
+  {
+    id: 'tz_w1', type: 'wenyan', district: 'tongzhou', source: '通州 · 古文',
+    stem: '《活板》"瞬息可就"的"就"，结合"瞬息可就"语境，意思应是：',
+    options: ['接近，靠近', '完成，成功', '就职，上任', '就地，当场'],
+    answer: 1,
+    explanation: '"瞬息可就"=转眼间就能完成，"就"=完成，与"一挥而就""功成名就"中"就"同义。',
+  },
+
+  // ══════════════════════════════════════════
+  // 古文 · 石景山（《活板》）
+  // ══════════════════════════════════════════
+  {
+    id: 'sjs_w1', type: 'wenyan', district: 'shijingshan', source: '石景山 · 古文',
+    stem: '《活板》加点字意思相同的一项是：',
+    options: [
+      '薄如钱唇 / 心急如焚（如）',
+      '唐人尚未盛为之 / 助人为乐（为）',
+      '持就火炀之 / 功成名就（就）',
+      '更互用之 / 即更刮目相待（更）',
+    ],
+    answer: 0,
+    explanation: 'A两个"如"均表比较，意思相同（像……一样）。B：为=制作/为了；C：就=靠近/完成；D：更=交替/重新。',
+  },
+  {
+    id: 'sjs_w2', type: 'wenyan', district: 'shijingshan', source: '石景山 · 古文',
+    stem: '《活板》介绍活字印刷时突出"活"的特点。下列对"活"理解不正确的是：',
+    options: [
+      '字印"活"：每字独立成印，取用灵活',
+      '排版"活"：自由排布字印，随时排用',
+      '印刷"活"：松脂遇热熔化，更换灵活',
+      '做法"活"：奇字"旋刻"，随时增补',
+    ],
+    answer: 2,
+    explanation: 'C有误。松脂遇热熔化的目的是将字印固定在铁板上，冷却后取版时再加热使字印自然脱落，体现的是"固定-取下"的灵活，并非印刷过程本身"活"。',
+  },
+
+  // ══════════════════════════════════════════
+  // 古文 · 顺义（《陋室铭》）
+  // ══════════════════════════════════════════
+  {
+    id: 'sy_w1', type: 'wenyan', district: 'shunyi', source: '顺义 · 古文',
+    stem: '下列加点字意思都相同的一项是：',
+    options: [
+      '有仙则名 / 莫名其妙（名）',
+      '谈笑有鸿儒 / 鸿篇巨制（鸿）',
+      '不知其子，视其父 / 真知灼见（知）',
+      '与善人居 / 善解人意（善）',
+    ],
+    answer: 1,
+    explanation: 'B两个"鸿"均=大（鸿儒=大学者，鸿篇=宏大的篇章）。A：名=出名/说出；C：知=了解/知识；D：善=善良/擅长。',
+  },
+  {
+    id: 'sy_w2', type: 'wenyan', district: 'shunyi', source: '顺义 · 古文',
+    stem: '对《陋室铭》句子翻译或理解有误的是：',
+    options: [
+      '斯是陋室，惟吾德馨——这是简陋的房子，只是我的品德好（就不觉简陋了）。体现作者不慕名利的高洁情操。',
+      '无丝竹之乱耳，无案牍之劳形——翻译正确；此句表达诗人对曾经宫廷生活和工作的怀恋。',
+      '丹之所藏者赤，漆之所藏者黑——朱砂蕴含红色，墨漆蕴含黑色。与"近朱者赤，近墨者黑"都强调环境对人的影响。',
+    ],
+    answer: 1,
+    explanation: 'B理解有误。"无丝竹之乱耳，无案牍之劳形"表达的是作者对喧嚣官场、繁杂公务的厌倦与回避，体现超然物外的情怀，并非怀恋朝廷生活。',
+  },
+
+  // ══════════════════════════════════════════
+  // 名著 · 通州（《钢铁是怎样炼成的》）
+  // ══════════════════════════════════════════
+  {
+    id: 'mz_9', type: 'mingzhu', district: 'tongzhou', source: '通州 · 名著',
+    stem: '为《钢铁是怎样炼成的》准备图书分类标签，最准确的是：',
+    options: ['科幻类故事', '科普类文学', '章回体小说', '自传体小说'],
+    answer: 3,
+    explanation: '《钢铁是怎样炼成的》是苏联作家奥斯特洛夫斯基以自身经历为蓝本写成的自传体小说，主人公保尔·柯察金有作者本人的影子。',
+  },
 ];
 
 // ══════════════════════════════════════════
@@ -1030,8 +1276,13 @@ function renderQuestion() {
   const q = questions[currentIndex];
   const area = document.getElementById('questionArea');
 
-  const tagClass = q.district === 'xicheng' ? 'xicheng' : 'dongcheng';
-  const tagText = q.district === 'xicheng' ? '西城挑战' : '东城';
+  const districtMap = {
+    dongcheng: '东城', xicheng: '西城', haidian: '海淀', chaoyang: '朝阳',
+    changping: '昌平', fengtai: '丰台', tongzhou: '通州',
+    shijingshan: '石景山', shunyi: '顺义',
+  };
+  const tagClass = q.district || 'dongcheng';
+  const tagText = (q.district === 'xicheng' ? '⚡ 西城挑战' : (districtMap[q.district] || q.district));
 
   let bodyHTML = '';
 
